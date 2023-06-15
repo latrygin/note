@@ -28,18 +28,34 @@ class InputPriorityWidget extends StatelessWidget {
           itemBuilder: (context) => [
             PopupMenuItem<TaskImportant>(
               value: TaskImportant.basic,
-              textStyle: const TextStyle(color: Colors.black),
-              child: Text(S.of(context).get(SName.nonePriority)),
+              child: Text(
+                S.of(context).get(SName.nonePriority),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
             ),
             PopupMenuItem<TaskImportant>(
               value: TaskImportant.low,
-              textStyle: const TextStyle(color: Colors.black),
-              child: Text(S.of(context).get(SName.lowPriority)),
+              child: Text(
+                S.of(context).get(SName.lowPriority),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
             ),
             PopupMenuItem<TaskImportant>(
               value: TaskImportant.important,
               textStyle: const TextStyle(color: Colors.red),
-              child: Text(S.of(context).get(SName.highPriority)),
+              child: Text(
+                S.of(context).get(SName.highPriority),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ],
         );

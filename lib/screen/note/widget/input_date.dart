@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +33,8 @@ class InputDateWidget extends StatelessWidget {
           subtitle: state.deadline == null
               ? null
               : Text(
-                  DateFormat.yMMMMd().format(state.deadline!),
+                  DateFormat.yMMMMd(Platform.localeName)
+                      .format(state.deadline!),
                   style: const TextStyle(color: Colors.deepPurple),
                 ),
           trailing: Switch(
