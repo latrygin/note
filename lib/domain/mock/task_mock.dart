@@ -60,7 +60,7 @@ class TaskMock implements TaskFacade {
       if (tasks[i].id == index) {
         tasks[i].text = text ?? tasks[i].text;
         tasks[i].important = important ?? tasks[i].important;
-        tasks[i].deadline = deadline ?? tasks[i].deadline;
+        tasks[i].deadline = deadline;
         tasks[i].done = done ?? tasks[i].done;
         tasks[i].changedAt = DateTime.now();
         logger.i('Update $index task');
