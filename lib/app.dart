@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/domain/facade/task_facade.dart';
+import 'package:note/utils/l10n/s.dart';
+import 'package:note/utils/navigation/navigation.dart';
+import 'package:note/utils/navigation/routes.dart';
+
+import 'utils/theme/theme.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final TaskFacade taskFacade;
+  const App({super.key, required this.taskFacade});
 
   static const String title = 'Note';
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: title,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      darkTheme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Hello, World!'),
-        ),
+    return RepositoryProvider.value(
+      value: taskFacade,
+      child: MaterialApp(
+        title: title,
+
+        ///localizations
+        localizationsDelegates: S.localizationsDelegates,
+        supportedLocales: S.supportedLocales,
+
+        ///theme
+        theme: FlutterTheme.light,
+        darkTheme: FlutterTheme.dark,
+
+        ///Navigation
+        navigatorKey: NavigationManager.instance.key,
+        initialRoute: RouteNames.initialRoute,
+        onGenerateRoute: RoutesBuilder.onGenerateRoute,
+        navigatorObservers: NavigationManager.instance.observers,
+
+        ///Other
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
