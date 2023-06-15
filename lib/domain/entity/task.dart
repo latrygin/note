@@ -1,33 +1,29 @@
 class Task {
-  final String title;
-  final DateTime? date;
-  final TaskPriority priority;
-  final bool isDone;
+  int id;
+  String text;
+  TaskImportant important;
+  DateTime? deadline;
+  bool done;
+  String? color;
+  DateTime? createdAt;
+  DateTime? changedAt;
+  int? lastUpdatedBy;
 
   Task({
-    required this.title,
-    this.date,
-    this.priority = TaskPriority.none,
-    this.isDone = false,
+    required this.id,
+    required this.text,
+    this.important = TaskImportant.basic,
+    this.deadline,
+    this.done = false,
+    this.color,
+    this.createdAt,
+    this.changedAt,
+    this.lastUpdatedBy,
   });
-
-  Task copyWith({
-    String? title,
-    DateTime? date,
-    TaskPriority? priority,
-    bool? isDone,
-  }) {
-    return Task(
-      title: title ?? this.title,
-      date: date ?? this.date,
-      priority: priority ?? this.priority,
-      isDone: isDone ?? this.isDone,
-    );
-  }
 }
 
-enum TaskPriority {
-  none,
+enum TaskImportant {
+  basic,
   low,
-  high,
+  important,
 }
