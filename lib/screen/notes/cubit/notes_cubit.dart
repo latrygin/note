@@ -1,43 +1,84 @@
-import 'dart:developer' as developer;
-
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/facade/task_facade.dart';
-
-part 'notes_state.dart';
+import 'package:note/screen/notes/cubit/notes_state.dart';
+import 'package:note/utils/logger/logger.dart';
 
 class NotesCubit extends Cubit<NotesState> {
   final TaskFacade _taskFacade;
   NotesCubit({
     required TaskFacade taskFacade,
   })  : _taskFacade = taskFacade,
-        super(const NotesState());
+        super(const NoteInitialState());
 
   Future<void> initial() async {
-    final tasks = await _taskFacade.getAll();
-    emit(state.copyWith(task: tasks, status: StatusPage.done));
-    developer.log('Initial: ${tasks.length}');
+    try {
+      emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
+      final tasks = await _taskFacade.getAll(filter: state.filter);
+      emit(NoteSuccessState(tasks: tasks, filter: state.filter));
+    } on Object catch (e) {
+      logger.e(e);
+      emit(NoteFailureState(e.toString()));
+    }
   }
 
-  Future<void> doneTask(int index, bool isDone) async {
-    emit(state.copyWith(status: StatusPage.loading));
-    developer.log('Done: $index');
-    await _taskFacade.changeStatus(index, isDone);
-    await initial();
+  Future<void> filter() async {
+    try {
+      switch (state.filter) {
+        case FilterTask.all:
+          emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
+          final tasks = await _taskFacade.getAll(filter: FilterTask.notDone);
+          emit(NoteSuccessState(tasks: tasks, filter: FilterTask.notDone));
+          break;
+        case FilterTask.notDone:
+          emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
+          final tasks = await _taskFacade.getAll();
+          emit(NoteSuccessState(tasks: tasks));
+          break;
+        default:
+          return;
+      }
+    } on Object catch (e) {
+      logger.e(e);
+      emit(NoteFailureState(e.toString()));
+    }
+  }
+
+  Future<void> doneTask(int index, bool done) async {
+    try {
+      emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
+      await _taskFacade.updateAt(index: index, done: done);
+      final tasks = await _taskFacade.getAll(filter: state.filter);
+      emit(NoteSuccessState(tasks: tasks, filter: state.filter));
+    } on Object catch (e) {
+      logger.e(e);
+      emit(NoteFailureState(e.toString()));
+    }
   }
 
   Future<void> deleteTask(int index) async {
-    emit(state.copyWith(status: StatusPage.loading));
-    developer.log('Deleted: $index');
-    await _taskFacade.removeAt(index);
-    await initial();
+    try {
+      emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
+      await _taskFacade.removeAt(index);
+      final tasks = await _taskFacade.getAll(filter: state.filter);
+      emit(NoteSuccessState(tasks: tasks, filter: state.filter));
+    } on Object catch (e) {
+      logger.e(e);
+      emit(NoteFailureState(e.toString()));
+    }
   }
 
-  Future<void> addTask() async {
-    emit(state.copyWith(status: StatusPage.loading));
-    developer.log('Add: ');
-    await _taskFacade.add(Task(title: '123123'));
-    await initial();
+  Future<void> addTask(String? text) async {
+    try {
+      if (text != null) {
+        emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
+        await _taskFacade.add(text: text, important: TaskImportant.basic);
+        final tasks = await _taskFacade.getAll(filter: state.filter);
+        emit(NoteSuccessState(tasks: tasks, filter: state.filter));
+      }
+    } on Object catch (e) {
+      logger.e(e);
+      emit(NoteFailureState(e.toString()));
+    }
   }
 }

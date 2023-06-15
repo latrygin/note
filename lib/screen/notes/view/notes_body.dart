@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/screen/notes/cubit/notes_state.dart';
 import 'package:note/screen/notes/notes.dart';
-import 'package:note/screen/notes/widget/note_item.dart';
 
 class NotesBody extends StatelessWidget {
   const NotesBody({super.key});
@@ -16,7 +16,7 @@ class NotesBody extends StatelessWidget {
           child: Card(
             child: BlocBuilder<NotesCubit, NotesState>(
               builder: (context, state) {
-                if (state.task == null) {
+                if (state.tasks == null) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
@@ -25,12 +25,15 @@ class NotesBody extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.task!.length,
+                  itemCount: state.tasks!.length + 1,
                   itemBuilder: (context, index) {
-                    return NoteWidget(
-                      index: index,
-                      task: state.task![index],
-                    );
+                    if (index == state.tasks!.length) {
+                      return const InputWidget();
+                    } else {
+                      return NoteWidget(
+                        task: state.tasks![index],
+                      );
+                    }
                   },
                 );
               },

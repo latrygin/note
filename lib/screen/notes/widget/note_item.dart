@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -86,7 +88,7 @@ class NoteWidget extends StatelessWidget {
         subtitle: task.deadline == null
             ? null
             : Text(
-                DateFormat.yMMMMd('ru').format(task.deadline!),
+                DateFormat.yMMMMd(Platform.localeName).format(task.deadline!),
                 style: const TextStyle(color: Colors.deepPurple),
               ),
         trailing: IconButton(

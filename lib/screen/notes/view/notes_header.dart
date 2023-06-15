@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/screen/notes/cubit/notes_cubit.dart';
+import 'package:note/screen/notes/cubit/notes_state.dart';
 import 'package:note/utils/l10n/s.dart';
 
 class NotesHeader extends StatefulWidget {
@@ -20,13 +23,7 @@ class _NotesHeaderState extends State<NotesHeader> {
 
   bool get isAppBar {
     return widget.scrollController.hasClients &&
-        widget.scrollController.offset > (expandedHeight - kToolbarHeight - 10);
-  }
-
-  @override
-  void dispose() {
-    widget.scrollController.dispose();
-    super.dispose();
+        widget.scrollController.offset > (expandedHeight - kToolbarHeight);
   }
 
   @override
@@ -34,20 +31,30 @@ class _NotesHeaderState extends State<NotesHeader> {
     return SliverAppBar(
       pinned: true,
       expandedHeight: expandedHeight,
-      title: isAppBar ? Text(S.of(context).get('my_task')) : null,
+      title: isAppBar ? Text(S.of(context).get(SName.myTask)) : null,
       actions: isAppBar
           ? [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.remove_red_eye,
-                  color: Colors.deepPurple,
-                ),
-              )
+              BlocBuilder<NotesCubit, NotesState>(
+                builder: (context, state) {
+                  return IconButton(
+                    onPressed: () => context.read<NotesCubit>().filter(),
+                    icon: Icon(
+                      state.filter == FilterTask.all
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.deepPurple,
+                    ),
+                  );
+                },
+              ),
             ]
           : null,
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.only(right: 20, left: 60, bottom: 8),
+        titlePadding: const EdgeInsets.only(
+          right: 20,
+          left: 68,
+          bottom: 8,
+        ),
         title: isAppBar
             ? null
             : Column(
@@ -55,23 +62,32 @@ class _NotesHeaderState extends State<NotesHeader> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    S.of(context).get('my_task'),
+                    S.of(context).get(SName.myTask),
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Выполнено - 5',
+                        S.of(context).withValue(SName.done, 4),
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
-                      const Icon(
-                        Icons.remove_red_eye,
-                        size: 18,
-                        color: Colors.deepPurple,
+                      BlocBuilder<NotesCubit, NotesState>(
+                        builder: (context, state) {
+                          return InkWell(
+                            onTap: () => context.read<NotesCubit>().filter(),
+                            child: Icon(
+                              state.filter == FilterTask.all
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.deepPurple,
+                              size: 20,
+                            ),
+                          );
+                        },
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
       ),

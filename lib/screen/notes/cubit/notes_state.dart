@@ -1,31 +1,64 @@
-part of 'notes_cubit.dart';
+import 'package:equatable/equatable.dart';
+import 'package:note/domain/entity/task.dart';
 
-final class NotesState extends Equatable {
-  final StatusPage status;
-  final List<Task>? task;
-  const NotesState({
-    this.status = StatusPage.loading,
-    this.task,
-  });
+sealed class NotesState extends Equatable {
+  FilterTask get filter => FilterTask.all;
 
-  NotesState copyWith({
-    StatusPage? status,
-    List<Task>? task,
-  }) {
-    return NotesState(
-      status: status ?? this.status,
-      task: task ?? this.task,
-    );
-  }
+  List<Task>? get tasks => null;
+
+  const NotesState();
+}
+
+final class NoteInitialState extends NotesState {
+  @override
+  List<Object?> get props => [];
+
+  const NoteInitialState();
+}
+
+final class NoteProgressState extends NotesState {
+  @override
+  final FilterTask filter;
 
   @override
-  List<Object?> get props => [
-    status,
-        task,
-      ];
+  final List<Task>? tasks;
+
+  @override
+  List<Object?> get props => [tasks, filter];
+
+  const NoteProgressState({this.tasks, this.filter = FilterTask.all});
 }
 
-enum StatusPage {
-  loading,
-  done,
+final class NoteSuccessState extends NotesState {
+  @override
+  final FilterTask filter;
+
+  @override
+  final List<Task>? tasks;
+
+  @override
+  List<Object?> get props => [tasks, filter];
+
+  const NoteSuccessState({required this.tasks, this.filter = FilterTask.all});
 }
+
+final class NoteFailureState extends NotesState {
+  final String message;
+
+  @override
+  final FilterTask filter;
+
+  @override
+  final List<Task>? tasks;
+
+  @override
+  List<Object?> get props => [tasks, filter];
+
+  const NoteFailureState(
+    this.message, {
+    this.tasks,
+    this.filter = FilterTask.all,
+  });
+}
+
+enum FilterTask { all, notDone }

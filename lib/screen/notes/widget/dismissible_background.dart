@@ -18,10 +18,7 @@ class DismissibleBackground extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       color: color,
       alignment: isRight ? Alignment.centerRight : Alignment.centerLeft,
-      child: Icon(
-        icon,
-        color: Colors.white,
-      ),
+      child: Icon(icon, color: Colors.white),
     );
   }
 }
