@@ -2,7 +2,7 @@
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:note/app.dart';
 //
-// import 'package:note/main.dart';
+// import 'package:note/main_mock.dart';
 //
 // void main() {
 //   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

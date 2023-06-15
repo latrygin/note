@@ -1,0 +1,13 @@
+{
+  "my_task" : "My tasks",
+  "done" : "Done -",
+  "save" : "SAVE",
+  "delete" : "Delete",
+  "what_needs": "What needs to be done...",
+  "priority" : "Important",
+  "none_priority" : "Basic",
+  "low_priority" : "Low",
+  "high_priority" : "!! Important",
+  "make_to" : "Сделать до",
+  "new_task" : "New task"
+}
