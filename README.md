@@ -1,16 +1,13 @@
-# Note
+# Мои Дела
 
-Note is a simple and intuitive Flutter app for managing your everyday notes. Easily jot down your thoughts, ideas, to-do lists, and important information with this user-friendly note-taking application.
+Note - это простое и интуитивно понятное приложение Flutter для управления вашими повседневными заметками. Легко записывайте свои мысли, идеи, списки дел и важную информацию с помощью этого удобного приложения для ведения заметок. Проект был сдела в качестве первой части домашнего задания.
 
-## Getting Started
+## Основные функции
 
-This project is a starting point for a Flutter application.
+- Отображение списка всех заметок: На главном экране приложения вы увидите список всех созданных заметок. Каждая заметка будет содержать описание, приоритет выполнения и дату создания. Вы также сможете отметить выполненные задачи и удалить ненужные заметки.
 
-A few resources to get you started if this is your first Flutter project:
+- Добавление новой заметки: Чтобы добавить новую заметку, вы можете воспользоваться быстрым созданием (внизу списка) или нажать на FloatingActionButton и перейти к детальному созданию задачи. Здесь вы сможете указать текст заметки, приоритет выполнения и как срок выполнения.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Редактирование существующей заметки: Если вы выберете заметку из списка на главном экране, вы будете перенаправлены на экран редактирования заметки с предварительно заполненными данными этой заметки. Вы сможете внести изменения в заголовок, приоритет и дату.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Установка
