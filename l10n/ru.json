@@ -1,0 +1,13 @@
+{
+  "my_task" : "Мои дела",
+  "done" : "Выполнено -",
+  "save" : "Сохранить",
+  "delete" : "Удалить",
+  "what_needs": "Что надо сделать...",
+  "priority" : "Важность",
+  "none_priority" : "Нет",
+  "low_priority" : "Низкая",
+  "high_priority" : "!! Высокая",
+  "make_to" : "Сделать до",
+  "new_task" : "Новое"
+}
