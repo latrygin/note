@@ -22,16 +22,17 @@ class NotesBody extends StatelessWidget {
                   );
                 }
                 return ListView.builder(
+                  reverse: true,
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.tasks!.length + 1,
                   itemBuilder: (context, index) {
-                    if (index == state.tasks!.length) {
+                    if (index == 0) {
                       return const InputWidget();
                     } else {
                       return NoteWidget(
-                        task: state.tasks![index],
+                        task: state.tasks![index - 1],
                       );
                     }
                   },

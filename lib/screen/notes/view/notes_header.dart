@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/domain/entity/task.dart';
 import 'package:note/screen/notes/cubit/notes_cubit.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 import 'package:note/utils/l10n/s.dart';
@@ -65,16 +66,16 @@ class _NotesHeaderState extends State<NotesHeader> {
                     S.of(context).get(SName.myTask),
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        S.of(context).withValue(SName.done, 4),
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      BlocBuilder<NotesCubit, NotesState>(
-                        builder: (context, state) {
-                          return InkWell(
+                  BlocBuilder<NotesCubit, NotesState>(
+                    builder: (context, state) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            S.of(context).withValue(SName.done, getCountDone(state.tasks)),
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          InkWell(
                             onTap: () => context.read<NotesCubit>().filter(),
                             child: Icon(
                               state.filter == FilterTask.all
@@ -83,14 +84,25 @@ class _NotesHeaderState extends State<NotesHeader> {
                               color: Colors.deepPurple,
                               size: 20,
                             ),
-                          );
-                        },
-                      ),
-                    ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
       ),
     );
+  }
+
+  int getCountDone(List<Task>? tasks) {
+    if(tasks == null){
+      return 0;
+    }
+    var i = 0;
+    for (final element in tasks) {
+      if (element.done) i++;
+    }
+    return i;
   }
 }

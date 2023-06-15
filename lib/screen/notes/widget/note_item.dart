@@ -56,6 +56,7 @@ class NoteWidget extends StatelessWidget {
               context.read<NotesCubit>().doneTask(task.id, value!),
         ),
         title: RichText(
+          maxLines: 3,
           text: TextSpan(
             children: [
               if (task.important == TaskImportant.low && !task.done)
