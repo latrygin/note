@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+export 's_name.dart';
+
 class S {
   static const supportedLocales = [
     Locale('en'),
@@ -33,6 +35,14 @@ class S {
       developer.log('123');
     }
     return string ?? 'unknown';
+  }
+
+  String withValue(String key, int value) {
+    final string = translations[key];
+    if (string == null) {
+      developer.log('123');
+    }
+    return '$string $value';
   }
 }
 
