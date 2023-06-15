@@ -77,7 +77,7 @@ class NoteWidget extends StatelessWidget {
               TextSpan(
                 text: task.text,
                 style: TextStyle(
-                  color: task.done ? Colors.grey : Colors.black,
+                  color: task.done ? Colors.grey : null,
                   decoration: task.done
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,
