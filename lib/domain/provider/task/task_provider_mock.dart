@@ -1,10 +1,10 @@
 import 'package:note/domain/entity/task.dart';
-import 'package:note/domain/facade/task_facade.dart';
+import 'package:note/domain/provider/task/task_provider_impl.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 import 'package:note/utils/exception/not_found_exception.dart';
 import 'package:note/utils/logger/logger.dart';
 
-class TaskMock implements TaskFacade {
+class TaskMock implements TaskProviderImpl {
   int autoId = 11;
   @override
   Future<List<Task>> getAll({FilterTask filter = FilterTask.all}) async {

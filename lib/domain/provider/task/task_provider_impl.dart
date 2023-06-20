@@ -1,7 +1,7 @@
 import 'package:note/domain/entity/task.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 
-abstract class TaskFacade {
+abstract class TaskProviderImpl {
   Future<List<Task>> getAll({FilterTask filter = FilterTask.all});
   Future<Task> getAt(int index);
   Future<void> removeAt(int index);

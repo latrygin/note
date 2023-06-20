@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:note/domain/facade/task_facade.dart';
+import 'package:note/domain/provider/task/task_provider_impl.dart';
 import 'package:note/utils/l10n/s.dart';
 import 'package:note/utils/navigation/navigation.dart';
 import 'package:note/utils/navigation/routes.dart';
@@ -8,7 +8,7 @@ import 'package:note/utils/navigation/routes.dart';
 import 'utils/theme/theme.dart';
 
 class App extends StatelessWidget {
-  final TaskFacade taskFacade;
+  final TaskProviderImpl taskFacade;
   const App({super.key, required this.taskFacade});
 
   static const String title = 'Note';

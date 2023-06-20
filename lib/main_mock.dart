@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:note/domain/mock/task_mock.dart';
+import 'package:note/domain/provider/task/task_provider_mock.dart';
 
 import 'app.dart';
 import 'utils/logger/logger.dart';

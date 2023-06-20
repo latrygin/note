@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:note/domain/facade/task_facade.dart';
+import 'package:note/domain/provider/task/task_provider_impl.dart';
 
 import '../notes.dart';
 
@@ -11,7 +11,7 @@ class NotesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NotesCubit(
-        taskFacade: context.read<TaskFacade>(),
+        taskFacade: context.read<TaskProviderImpl>(),
       )..initial(),
       child: const NotesView(),
     );

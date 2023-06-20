@@ -1,8 +1,9 @@
 import 'package:note/domain/entity/task.dart';
-import 'package:note/domain/facade/task_facade.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 
-class TaskProvider implements TaskFacade {
+import 'task_provider_impl.dart';
+
+class TaskProvider implements TaskProviderImpl {
   @override
   Future<void> add({
     required String text,

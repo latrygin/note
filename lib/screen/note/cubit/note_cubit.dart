@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:note/domain/entity/task.dart';
-import 'package:note/domain/facade/task_facade.dart';
+import 'package:note/domain/provider/task/task_provider_impl.dart';
 import 'package:note/utils/logger/logger.dart';
 import 'package:note/utils/navigation/navigation.dart';
 
 import 'note_state.dart';
 
 class NoteCubit extends Cubit<NoteState> {
-  final TaskFacade _taskFacade;
+  final TaskProviderImpl _taskFacade;
 
   NoteCubit({
     required int? id,
-    required TaskFacade taskFacade,
+    required TaskProviderImpl taskFacade,
   })  : _taskFacade = taskFacade,
         super(NoteState(id));
 
