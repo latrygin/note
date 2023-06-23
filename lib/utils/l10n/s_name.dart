@@ -11,4 +11,5 @@ class SName {
   static const String highPriority = 'high_priority';
   static const String makeTo = 'make_to';
   static const String newTask = 'new_task';
+  static const String loading = 'loading';
 }

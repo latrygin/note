@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:note/utils/logger/logger.dart';
 
 class NavigationLogger extends NavigatorObserver {
   @override
@@ -7,7 +6,7 @@ class NavigationLogger extends NavigatorObserver {
     Route<dynamic> route,
     Route<dynamic>? previousRoute,
   ) {
-    logger.i('$NavigationLogger.didPush: ${route.settings.name}');
+    // logger.i('$NavigationLogger.didPush: ${route.settings.name}');
   }
 
   @override
@@ -15,7 +14,7 @@ class NavigationLogger extends NavigatorObserver {
     Route<dynamic> route,
     Route<dynamic>? previousRoute,
   ) {
-    logger.i('$NavigationLogger.didPop: ${route.settings.name}');
+    // logger.i('$NavigationLogger.didPop: ${route.settings.name}');
   }
 
   @override

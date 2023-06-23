@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -31,17 +30,13 @@ class S {
 
   String get(String key) {
     final string = translations[key];
-    if (string == null) {
-      developer.log('123');
-    }
+    if (string == null) {}
     return string ?? 'unknown';
   }
 
   String withValue(String key, int value) {
     final string = translations[key];
-    if (string == null) {
-      developer.log('123');
-    }
+    if (string == null) {}
     return '$string $value';
   }
 }

@@ -18,7 +18,7 @@ class NavigationManager {
 
   NavigatorState get _navigator => key.currentState!;
 
-  void openTask(int? id) {
+  void openTask(String? id) {
     _navigator.pushNamed(
       RouteNames.note,
       arguments: id,
