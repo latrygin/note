@@ -20,6 +20,8 @@ class InputDateWidget extends StatelessWidget {
       if (value != null) {
         context.read<NoteCubit>().setDate(value);
       }
+
+      //TODO: change then to await
     });
   }
 
@@ -28,20 +30,20 @@ class InputDateWidget extends StatelessWidget {
     return BlocBuilder<NoteCubit, NoteState>(
       builder: (context, state) {
         return ListTile(
-          onTap: () => showDatePick(context, state.deadline),
+          onTap: () => showDatePick(context, state.task.deadline),
           title: Text(S.of(context).get(SName.makeTo)),
-          subtitle: state.deadline == null
+          subtitle: state.task.deadline == null
               ? null
               : Text(
                   DateFormat.yMMMMd(Platform.localeName)
-                      .format(state.deadline!),
+                      .format(state.task.deadline!),
                   style: const TextStyle(color: Colors.deepPurple),
                 ),
           trailing: Switch(
-            value: state.deadline != null,
+            value: state.task.deadline != null,
             onChanged: (value) {
               if (value) {
-                showDatePick(context, state.deadline);
+                showDatePick(context, state.task.deadline);
               } else {
                 context.read<NoteCubit>().setDate(null);
               }
