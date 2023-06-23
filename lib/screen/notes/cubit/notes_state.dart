@@ -2,23 +2,23 @@ import 'package:equatable/equatable.dart';
 import 'package:note/domain/entity/task.dart';
 
 sealed class NotesState extends Equatable {
-  FilterTask get filter => FilterTask.all;
+  bool get filter => false;
 
   List<Task>? get tasks => null;
 
   const NotesState();
 }
 
-final class NoteInitialState extends NotesState {
+final class NotesInitialState extends NotesState {
   @override
   List<Object?> get props => [];
 
-  const NoteInitialState();
+  const NotesInitialState();
 }
 
-final class NoteProgressState extends NotesState {
+final class NotesProgressState extends NotesState {
   @override
-  final FilterTask filter;
+  final bool filter;
 
   @override
   final List<Task>? tasks;
@@ -26,12 +26,12 @@ final class NoteProgressState extends NotesState {
   @override
   List<Object?> get props => [tasks, filter];
 
-  const NoteProgressState({this.tasks, this.filter = FilterTask.all});
+  const NotesProgressState({this.tasks, this.filter = false});
 }
 
-final class NoteSuccessState extends NotesState {
+final class NotesSuccessState extends NotesState {
   @override
-  final FilterTask filter;
+  final bool filter;
 
   @override
   final List<Task>? tasks;
@@ -39,14 +39,27 @@ final class NoteSuccessState extends NotesState {
   @override
   List<Object?> get props => [tasks, filter];
 
-  const NoteSuccessState({required this.tasks, this.filter = FilterTask.all});
+  const NotesSuccessState({required this.tasks, this.filter = false});
 }
 
-final class NoteFailureState extends NotesState {
+final class NotesTemporaryState extends NotesState {
+  @override
+  final bool filter;
+
+  @override
+  final List<Task>? tasks;
+
+  @override
+  List<Object?> get props => [tasks, filter];
+
+  const NotesTemporaryState({required this.tasks, this.filter = false});
+}
+
+final class NotesFailureState extends NotesState {
   final String message;
 
   @override
-  final FilterTask filter;
+  final bool filter;
 
   @override
   final List<Task>? tasks;
@@ -54,10 +67,10 @@ final class NoteFailureState extends NotesState {
   @override
   List<Object?> get props => [tasks, filter];
 
-  const NoteFailureState(
+  const NotesFailureState(
     this.message, {
     this.tasks,
-    this.filter = FilterTask.all,
+    this.filter = false,
   });
 }
 
