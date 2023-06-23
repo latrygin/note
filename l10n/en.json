@@ -9,5 +9,6 @@
   "low_priority" : "Low",
   "high_priority" : "!! Important",
   "make_to" : "Сделать до",
-  "new_task" : "New task"
+  "new_task" : "New task",
+  "loading" : "Loading...  "
 }
