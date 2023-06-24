@@ -1,9 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:note/domain/provider/revision/revision_provider.dart';
-import 'package:note/utils/exception/bad_request_exception.dart';
-import 'package:note/utils/exception/not_found_exception.dart';
-import 'package:note/utils/exception/server_error_exception.dart';
-import 'package:note/utils/exception/unauthorized_exception.dart';
+import 'package:note/utils/exception/exception.dart';
 
 import 'token.dart';
 
@@ -38,7 +35,11 @@ class AuthInterceptor extends Interceptor {
       case 500:
         throw ServerErrorException();
       default:
-        throw Exception('Какого хрена ${err.response?.statusCode}?');
+        if (err.response?.statusCode == null) {
+          throw NotInternetException();
+        } else {
+          throw UnknownException();
+        }
     }
     super.onError(err, handler);
   }

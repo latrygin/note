@@ -17,8 +17,8 @@ class ApiClient {
       final response = await _https.get<Map<String, dynamic>>(path);
       logger.v(response.data);
       return response;
-    } on Exception catch (e) {
-      throw _handleError(e);
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
   }
 
@@ -37,8 +37,8 @@ class ApiClient {
 
       logger.v(response.data);
       return response;
-    } on Exception catch (e) {
-      throw _handleError(e);
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
   }
 
@@ -56,8 +56,8 @@ class ApiClient {
       );
       logger.v(response.data);
       return response;
-    } on Exception catch (e) {
-      throw _handleError(e);
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
   }
 
@@ -75,8 +75,8 @@ class ApiClient {
       );
       logger.v(response.data);
       return response;
-    } on Exception catch (e) {
-      throw _handleError(e);
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
   }
 
@@ -86,12 +86,8 @@ class ApiClient {
       final response = await _https.delete<Map<String, dynamic>>(path);
       logger.v(response.data);
       return response;
-    } on Exception catch (e) {
-      throw _handleError(e);
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
-  }
-
-  dynamic _handleError(Exception error) {
-    throw error;
   }
 }
