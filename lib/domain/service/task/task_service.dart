@@ -20,7 +20,7 @@ class TaskService implements TaskServiceImpl {
     final taskListResponse = TaskListResponse.fromMap(
       response.data as Map<String, dynamic>,
     );
-    //await _revision.set(taskListResponse.revision);
+    await _revision.set(taskListResponse.revision);
     return taskListResponse;
   }
 
@@ -40,7 +40,7 @@ class TaskService implements TaskServiceImpl {
     final taskResponse = TaskResponse.fromMap(
       response.data as Map<String, dynamic>,
     );
-    //await _revision.set(taskResponse.revision);
+    await _revision.set(taskResponse.revision);
     return taskResponse;
   }
 
