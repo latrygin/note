@@ -1,13 +1,11 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:note/domain/api/request/task_list_request.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/provider/revision/local_revision_provider_impl.dart';
 import 'package:note/domain/provider/task/task_provider_impl.dart';
 import 'package:note/domain/service/task/task_service_impl.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
+import 'package:note/utils/exception/not_internet_exception.dart';
 import 'package:note/utils/logger/logger.dart';
 
 class NotesCubit extends Cubit<NotesState> {
@@ -71,14 +69,10 @@ class NotesCubit extends Cubit<NotesState> {
             filter: state.filter,
           ),
         );
+        return;
       }
-    } on DioException catch (e, stackTrace) {
+    } on NotInternetException catch (_) {
       logger.i('Нет интернета');
-      log(
-        e.toString(),
-        error: e,
-        stackTrace: stackTrace,
-      );
       await _localRevisionProvider.set(true);
       emit(
         NotesSuccessState(
@@ -86,15 +80,11 @@ class NotesCubit extends Cubit<NotesState> {
           filter: state.filter,
         ),
       );
-    } on Object catch (error, stackTrace) {
-      log(
-        'INITIAL TASK:',
-        error: error,
-        stackTrace: stackTrace,
-      );
+    } on Exception catch (error, stackTrace) {
+      logger.e('INITIAL TASK:', error, stackTrace);
       emit(
         NotesFailureState(
-          error.toString(),
+          error: error,
           tasks: state.tasks,
           filter: state.filter,
         ),
@@ -127,10 +117,12 @@ class NotesCubit extends Cubit<NotesState> {
       ///Update local task
       await _taskProvider.updateAt(task);
 
+      final tasks = await _taskProvider.getAll();
+
       ///Start Temporary State
       emit(
         NotesTemporaryState(
-          tasks: state.tasks!..[index] = task,
+          tasks: tasks,
           filter: state.filter,
         ),
       );
@@ -145,7 +137,7 @@ class NotesCubit extends Cubit<NotesState> {
           filter: state.filter,
         ),
       );
-    } on DioException catch (_) {
+    } on NotInternetException catch (_) {
       logger.i('DO TASK: Нет интернета');
       await _localRevisionProvider.set(true);
       emit(
@@ -154,11 +146,11 @@ class NotesCubit extends Cubit<NotesState> {
           filter: state.filter,
         ),
       );
-    } on Object catch (e) {
-      logger.e('DONE TASK: $e');
+    } on Exception catch (error, stackTrace) {
+      logger.e('DONE TASK:', error, stackTrace);
       emit(
         NotesFailureState(
-          e.toString(),
+          error: error,
           tasks: state.tasks,
           filter: state.filter,
         ),
@@ -208,7 +200,7 @@ class NotesCubit extends Cubit<NotesState> {
           filter: state.filter,
         ),
       );
-    } on DioException catch (_) {
+    } on NotInternetException catch (_) {
       logger.i('DELETE TASK: Нет интернета');
       await _localRevisionProvider.set(true);
       emit(
@@ -217,11 +209,11 @@ class NotesCubit extends Cubit<NotesState> {
           filter: state.filter,
         ),
       );
-    } on Object catch (e) {
-      logger.e('DELETE TASK: $e');
+    } on Exception catch (error, stackTrace) {
+      logger.e('DELETE TASK:', error, stackTrace);
       emit(
         NotesFailureState(
-          e.toString(),
+          error: error,
           tasks: state.tasks,
           filter: state.filter,
         ),
@@ -271,7 +263,7 @@ class NotesCubit extends Cubit<NotesState> {
           ),
         );
       }
-    } on DioException catch (_) {
+    } on NotInternetException catch (_) {
       logger.i('ADD TASK: Нет интернета');
       await _localRevisionProvider.set(true);
       emit(
@@ -280,11 +272,11 @@ class NotesCubit extends Cubit<NotesState> {
           filter: state.filter,
         ),
       );
-    } on Object catch (e) {
-      logger.e('ADD TASK: $e');
+    } on Exception catch (error, stackTrace) {
+      logger.e('ADD TASK:', error, stackTrace);
       emit(
         NotesFailureState(
-          e.toString(),
+          error: error,
           tasks: state.tasks,
           filter: state.filter,
         ),
@@ -300,31 +292,20 @@ class NotesCubit extends Cubit<NotesState> {
   }
 
   void filter() {
-    try {
-      ///Start Loading State
-      emit(
-        NotesProgressState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+    ///Start Loading State
+    emit(
+      NotesProgressState(
+        tasks: state.tasks,
+        filter: state.filter,
+      ),
+    );
 
-      ///Start Success State
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: !state.filter,
-        ),
-      );
-    } on Object catch (e) {
-      logger.e('FILTER TASK: $e');
-      emit(
-        NotesFailureState(
-          e.toString(),
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
-    }
+    ///Start Success State
+    emit(
+      NotesSuccessState(
+        tasks: state.tasks,
+        filter: !state.filter,
+      ),
+    );
   }
 }

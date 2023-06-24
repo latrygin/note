@@ -56,7 +56,7 @@ final class NotesTemporaryState extends NotesState {
 }
 
 final class NotesFailureState extends NotesState {
-  final String message;
+  final Exception error;
 
   @override
   final bool filter;
@@ -67,8 +67,8 @@ final class NotesFailureState extends NotesState {
   @override
   List<Object?> get props => [tasks, filter];
 
-  const NotesFailureState(
-    this.message, {
+  const NotesFailureState({
+    required this.error,
     this.tasks,
     this.filter = false,
   });

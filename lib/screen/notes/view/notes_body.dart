@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note/screen/notes/cubit/notes_cubit.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
+import 'package:note/utils/exception/exception.dart';
+import 'package:note/utils/l10n/s.dart';
 import 'package:note/utils/navigation/navigation.dart';
 
 import 'notes_header.dart';
@@ -33,8 +35,25 @@ class _NotesBodyState extends State<NotesBody> with RouteAware {
     return BlocListener<NotesCubit, NotesState>(
       listener: (context, state) {
         if (state is NotesFailureState) {
+          late String message;
+          switch (state.error) {
+            case BadRequestException():
+              message = S.of(context).get(SName.badRequest);
+            case UnauthorizedException():
+              message = S.of(context).get(SName.unauthorized);
+            case NotFoundException():
+              message = S.of(context).get(SName.notFound);
+            case ServerErrorException():
+              message = S.of(context).get(SName.serverError);
+            case NotInternetException():
+              message = S.of(context).get(SName.notInternet);
+            case UnknownException():
+              message = S.of(context).get(SName.unknownException);
+            default:
+              message = S.of(context).get(SName.veryUnknownException);
+          }
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
+            SnackBar(content: Text(message)),
           );
         }
       },
