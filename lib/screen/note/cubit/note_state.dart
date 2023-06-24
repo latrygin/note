@@ -47,7 +47,7 @@ final class NoteSuccessState extends NoteState {
 }
 
 final class NoteFailureState extends NoteState {
-  final String message;
+  final Exception error;
 
   @override
   final Task task;
@@ -56,11 +56,11 @@ final class NoteFailureState extends NoteState {
   final bool create;
 
   const NoteFailureState({
-    required this.message,
+    required this.error,
     required this.task,
     required this.create,
   });
 
   @override
-  List<Object?> get props => [message, task, create];
+  List<Object?> get props => [error, task, create];
 }

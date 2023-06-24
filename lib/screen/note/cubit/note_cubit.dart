@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/domain/provider/revision/local_revision_provider_impl.dart';
 import 'package:note/domain/provider/task/task_provider_impl.dart';
 import 'package:note/domain/service/task/task_service_impl.dart';
+import 'package:note/utils/exception/exception.dart';
 import 'package:note/utils/logger/logger.dart';
 import 'package:note/utils/navigation/navigation.dart';
 
@@ -55,7 +55,7 @@ class NoteCubit extends Cubit<NoteState> {
           ),
         );
       }
-    } on DioException catch (_) {
+    } on NotInternetException catch (_) {
       logger.i('Нет интернета');
       await _localRevisionProvider.set(true);
       emit(
@@ -64,11 +64,11 @@ class NoteCubit extends Cubit<NoteState> {
           create: state.create,
         ),
       );
-    } on Exception catch (e) {
-      logger.e('INITIAL METHOD: $e');
+    } on Exception catch (error, stackTrace) {
+      logger.e('INITIAL TASK:', error, stackTrace);
       emit(
         NoteFailureState(
-          message: e.toString(),
+          error: error,
           task: state.task,
           create: id == null,
         ),
@@ -95,7 +95,14 @@ class NoteCubit extends Cubit<NoteState> {
           ),
         );
 
-        await _taskProvider.create(state.task);
+        final localTask = await _taskProvider.create(state.task);
+
+        emit(
+          NoteProgressState(
+            task: localTask,
+            create: false,
+          ),
+        );
 
         ///Create task
         final task = await _taskService.post(state.task);
@@ -129,11 +136,20 @@ class NoteCubit extends Cubit<NoteState> {
           ),
         );
       }
-    } on Exception catch (e) {
-      logger.e('INITIAL METHOD: $e');
+    } on NotInternetException catch (_) {
+      logger.i('SAVE TASK: Нет интернета');
+      await _localRevisionProvider.set(true);
+      emit(
+        NoteSuccessState(
+          task: state.task,
+          create: state.create,
+        ),
+      );
+    } on Exception catch (error, stackTrace) {
+      logger.e('SAVE TASK:', error, stackTrace);
       emit(
         NoteFailureState(
-          message: e.toString(),
+          error: error,
           task: state.task,
           create: state.create,
         ),
@@ -162,14 +178,23 @@ class NoteCubit extends Cubit<NoteState> {
 
       /// Delete task
       await _taskService.delete(state.task.id);
-    } on Exception catch (e) {
+    } on NotInternetException catch (_) {
+      logger.i('DELETE TASK: Нет интернета');
+      await _localRevisionProvider.set(true);
+      emit(
+        NoteSuccessState(
+          task: state.task,
+          create: state.create,
+        ),
+      );
+    } on Exception catch (error, stackTrace) {
       ///On Exception method
 
-      logger.e('DELETE METHOD: $e');
+      logger.e('DELETE TASK:', error, stackTrace);
 
       emit(
         NoteFailureState(
-          message: e.toString(),
+          error: error,
           task: state.task,
           create: state.create,
         ),
