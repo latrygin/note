@@ -4,6 +4,7 @@ Note - это простое и интуитивно понятное прило
 
 <img src="https://github.com/latrygin/note/assets/114460271/d3bfa96e-0a99-4326-8b98-66bf198f9e71" width="100">
 
+
 ## Связаться со мной, чтобы обсудить критерии оценивания
 
 [Telegram](https://t.me/alatrygin)
@@ -11,6 +12,7 @@ Note - это простое и интуитивно понятное прило
 ## Скачать приложение
 
 [download APK](https://github.com/latrygin/note/releases/download/latest/note.apk)
+
 
 ## Основные функции
 
@@ -30,11 +32,13 @@ Note - это простое и интуитивно понятное прило
 <img src="https://github.com/latrygin/note/assets/114460271/0663f9e1-81d0-44fe-acf1-70f701d6342e" width="200">
 <img src="https://github.com/latrygin/note/assets/114460271/33b86bbd-c494-4c26-8df0-dd843d035ec0" width="200">
 
+
 ## Зависимости
 
 Для разработки проекта используются следующие зависимости:
 
 ```yaml
+
 version: 2.0.0+2
 
 environment:
@@ -65,6 +69,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_runner: ^2.4.5
   hive_generator: ^2.0.0
+
 ```
 
 
@@ -154,6 +159,7 @@ abstract class URLs {
 
 ```
 
+
 4. Подключите свое устройство или эмулятор и выполните следующую команду:
 
 ```bash
@@ -168,6 +174,7 @@ flutter run
 
 [lib/domain/entity/task.dart](https://github.com/latrygin/note/blob/main/lib/domain/entity/task.dart)
 ```dart
+
 @HiveType(typeId: 1)
 class Task {
   @HiveField(0)
@@ -197,6 +204,7 @@ class Task {
   @HiveField(8)
   final String? lastUpdatedBy;
 
+
   Task({
     required this.id,
     required this.text,
@@ -208,6 +216,7 @@ class Task {
     this.changedAt,
     this.lastUpdatedBy,
   });
+
 
 ```
 
@@ -334,6 +343,7 @@ void main() {
     },
   );
 }
+
 
 ```
 
