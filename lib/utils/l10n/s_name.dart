@@ -12,4 +12,13 @@ class SName {
   static const String makeTo = 'make_to';
   static const String newTask = 'new_task';
   static const String loading = 'loading';
+
+  ///Exceptions
+  static const String badRequest = 'bad_request';
+  static const String unauthorized = 'unauthorized';
+  static const String notFound = 'not_found';
+  static const String serverError = 'server_error';
+  static const String notInternet = 'not_internet';
+  static const String unknownException = 'unknown_exception';
+  static const String veryUnknownException = 'very_unknown_exception';
 }
