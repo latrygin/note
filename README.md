@@ -4,9 +4,13 @@ Note - это простое и интуитивно понятное прило
 
 <img src="https://github.com/latrygin/note/assets/114460271/d3bfa96e-0a99-4326-8b98-66bf198f9e71" width="100">
 
+## Связаться со мной, чтобы обсудить критерии оценивания
+
+[Telegram](https://t.me/alatrygin)
+
 ## Скачать приложение
 
-[download APK](https://github.com/latrygin/note/releases/tag/release#:~:text=3-,note.apk,-20%20MB)
+[download APK](https://github.com/latrygin/note/releases/download/latest/note.apk)
 
 ## Основные функции
 
