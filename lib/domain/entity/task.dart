@@ -1,39 +1,33 @@
 import 'dart:convert';
 
-import 'package:hive/hive.dart';
+import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 
 import 'task_importance.dart';
 
 part 'task.g.dart';
 
-@HiveType(typeId: 1)
+@collection
 class Task {
-  @HiveField(0)
+  Id get isarId => fastHash(id);
+
   final String id;
 
-  @HiveField(1)
   final String text;
 
-  @HiveField(2)
+  @enumerated
   final TaskImportant importance;
 
-  @HiveField(3)
   final DateTime? deadline;
 
-  @HiveField(4)
   final bool done;
 
-  @HiveField(5)
   final String? color;
 
-  @HiveField(6)
   final DateTime? createdAt;
 
-  @HiveField(7)
   final DateTime? changedAt;
 
-  @HiveField(8)
   final String? lastUpdatedBy;
 
   Task({
@@ -147,4 +141,19 @@ class Task {
       lastUpdatedBy: lastUpdatedBy ?? this.lastUpdatedBy,
     );
   }
+}
+
+int fastHash(String string) {
+  var hash = 0xcbf29ce484222325;
+
+  var i = 0;
+  while (i < string.length) {
+    final codeUnit = string.codeUnitAt(i++);
+    hash ^= codeUnit >> 8;
+    hash *= 0x100000001b3;
+    hash ^= codeUnit & 0xFF;
+    hash *= 0x100000001b3;
+  }
+
+  return hash;
 }

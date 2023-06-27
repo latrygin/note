@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:note/domain/provider/revision/local_revision_provider.dart';
 import 'package:note/domain/provider/revision/revision_provider.dart';
-import 'package:note/domain/provider/task/task_provider.dart';
+import 'package:note/domain/provider/task/task_provider_isar.dart';
 import 'package:note/domain/service/task/task_service.dart';
 import 'package:note/utils/logger/logger.dart';
 
@@ -15,10 +14,9 @@ void main() {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await Hive.initFlutter();
       runApp(
         App(
-          taskProvider: TaskProvider(),
+          taskProvider: TaskProviderIsar(),
           taskService: TaskService(),
           localRevisionProvider: LocalRevisionProvider(),
           revisionProvider: RevisionProvider(),
