@@ -12,7 +12,7 @@ Note - это простое и интуитивно понятное прило
 
 ## Скачать приложение
 
-[download APK](https://github.com/latrygin/note/releases/download/latest/note.apk)
+[Скачать APK](https://github.com/latrygin/note/releases/download/latest/note.apk)
 
 
 ## Основные функции
