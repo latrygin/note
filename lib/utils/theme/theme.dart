@@ -179,7 +179,7 @@ class FlutterTheme {
         ),
         iconTheme: const IconThemeData(
           size: 24,
-          color: colorRedDark,
+          color: labelPrimaryDark,
         ),
       ),
       listTileTheme: const ListTileThemeData(
@@ -212,6 +212,7 @@ class FlutterTheme {
       ),
       colorScheme: ColorScheme.fromSwatch(
         brightness: Brightness.dark,
+        primarySwatch: Colors.deepPurple,
         primaryColorDark: Colors.deepPurple,
         accentColor: Colors.deepPurple,
       ),
