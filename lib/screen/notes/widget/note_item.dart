@@ -4,13 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:note/domain/entity/task.dart';
+import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/screen/notes/notes.dart';
 import 'package:note/utils/navigation/navigation.dart';
 import 'package:note/utils/theme/theme.dart';
 
 class NoteWidget extends StatelessWidget {
+  final int index;
   final Task task;
-  const NoteWidget({super.key, required this.task});
+  const NoteWidget({
+    super.key,
+    required this.task,
+    required this.index,
+  });
 
   Color purple(Set<MaterialState> states) => Colors.deepPurple;
   Color red(Set<MaterialState> states) => FlutterTheme.colorRedLight;
@@ -22,11 +28,11 @@ class NoteWidget extends StatelessWidget {
       key: UniqueKey(),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
-          await context.read<NotesCubit>().deleteTask(task.id);
+          await context.read<NotesCubit>().deleteTask(index);
           return true;
         }
         if (direction == DismissDirection.endToStart) {
-          await context.read<NotesCubit>().doneTask(task.id, !task.done);
+          await context.read<NotesCubit>().doneTask(index, !task.done);
           return false;
         }
         return null;
@@ -47,26 +53,26 @@ class NoteWidget extends StatelessWidget {
           fillColor: MaterialStateProperty.resolveWith(
             task.done
                 ? purple
-                : task.important == TaskImportant.important
+                : task.importance == TaskImportant.important
                     ? red
                     : gray,
           ),
           value: task.done,
           onChanged: (value) =>
-              context.read<NotesCubit>().doneTask(task.id, value!),
+              context.read<NotesCubit>().doneTask(index, value!),
         ),
         title: RichText(
           maxLines: 3,
           text: TextSpan(
             children: [
-              if (task.important == TaskImportant.low && !task.done)
+              if (task.importance == TaskImportant.low && !task.done)
                 const WidgetSpan(
                   child: Icon(
                     Icons.arrow_downward,
                     size: 16,
                   ),
                 ),
-              if (task.important == TaskImportant.important && !task.done)
+              if (task.importance == TaskImportant.important && !task.done)
                 const WidgetSpan(
                   child: Icon(
                     Icons.warning_rounded,

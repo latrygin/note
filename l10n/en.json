@@ -8,6 +8,14 @@
   "none_priority" : "Basic",
   "low_priority" : "Low",
   "high_priority" : "!! Important",
-  "make_to" : "Сделать до",
-  "new_task" : "New task"
+  "make_to" : "Make up to",
+  "new_task" : "New task",
+  "loading" : "Loading...  ",
+  "bad_request" : "Error when sending data to the server",
+  "unauthorized" : "Unknown user",
+  "not_found" : "Task not found",
+  "server_error" : "Server operation error",
+  "not_internet" : "The changes were made only to the local storage",
+  "unknown_exception" : "Unknown error",
+  "very_unknown_exception" : "A very unknown error"
 }

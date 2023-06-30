@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:note/domain/entity/task.dart';
+import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/screen/note/cubit/note_state.dart';
 import 'package:note/screen/note/note.dart';
 import 'package:note/utils/l10n/s.dart';
@@ -18,9 +18,9 @@ class InputPriorityWidget extends StatelessWidget {
           child: ListTile(
             title: Text(S.of(context).get(SName.priority)),
             subtitle: Text(
-              state.important == TaskImportant.basic
+              state.task.importance == TaskImportant.basic
                   ? S.of(context).get(SName.nonePriority)
-                  : state.important == TaskImportant.low
+                  : state.task.importance == TaskImportant.low
                       ? S.of(context).get(SName.lowPriority)
                       : S.of(context).get(SName.highPriority),
             ),

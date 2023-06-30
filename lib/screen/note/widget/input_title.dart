@@ -10,13 +10,14 @@ class InputTitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NoteCubit, NoteState>(
+      buildWhen: (previous, current) => previous.create != current.create,
       builder: (context, state) {
         return Card(
           margin: const EdgeInsets.symmetric(
             horizontal: 16.0,
             vertical: 6.0,
           ),
-          child: state.text == null
+          child: state.create
               ? TextField(
                   minLines: 4,
                   maxLines: 100,
@@ -28,7 +29,7 @@ class InputTitleWidget extends StatelessWidget {
                   ),
                 )
               : TextFormField(
-                  initialValue: state.text,
+                  initialValue: state.task.text,
                   minLines: 4,
                   maxLines: 100,
                   onChanged: (title) =>

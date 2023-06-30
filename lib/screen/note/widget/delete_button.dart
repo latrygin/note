@@ -12,16 +12,16 @@ class DeleteButtonWidget extends StatelessWidget {
     return BlocBuilder<NoteCubit, NoteState>(
       builder: (context, state) {
         return ListTile(
-          enabled: state.id != null,
+          enabled: !state.create,
           onTap: () => context.read<NoteCubit>().delete(),
           leading: Icon(
             Icons.delete,
-            color: state.id != null ? Colors.red : Colors.grey,
+            color: !state.create ? Colors.red : Colors.grey,
           ),
           title: Text(
             S.of(context).get(SName.delete),
             style: TextStyle(
-              color: state.id != null ? Colors.red : Colors.grey,
+              color: !state.create ? Colors.red : Colors.grey,
             ),
           ),
         );

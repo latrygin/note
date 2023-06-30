@@ -2,11 +2,18 @@
 
 Note - это простое и интуитивно понятное приложение Flutter для управления вашими повседневными заметками. Легко записывайте свои мысли, идеи, списки дел и важную информацию с помощью этого удобного приложения для ведения заметок. Проект был сдела в качестве первой части домашнего задания.
 
-<img src="https://github.com/latrygin/note/assets/114460271/d3bfa96e-0a99-4326-8b98-66bf198f9e71" width="100">
+<img src="https://github.com/latrygin/note/assets/114460271/e1dd5830-9035-4160-932e-48330e31d855" width="100">
+
+
+
+## Связаться со мной, чтобы обсудить критерии оценивания
+
+[Telegram](https://t.me/alatrygin)
 
 ## Скачать приложение
 
-[download APK](https://github.com/latrygin/note/releases/tag/release#:~:text=3-,note.apk,-20%20MB)
+[Скачать APK](https://github.com/latrygin/note/releases/download/latest/note.apk)
+
 
 ## Основные функции
 
@@ -26,12 +33,14 @@ Note - это простое и интуитивно понятное прило
 <img src="https://github.com/latrygin/note/assets/114460271/0663f9e1-81d0-44fe-acf1-70f701d6342e" width="200">
 <img src="https://github.com/latrygin/note/assets/114460271/33b86bbd-c494-4c26-8df0-dd843d035ec0" width="200">
 
-##Зависимости
+
+## Зависимости
 
 Для разработки проекта используются следующие зависимости:
 
 ```yaml
-version: 1.0.0+1
+
+version: 2.0.0+2
 
 environment:
   sdk: '>=3.0.3 <4.0.0'
@@ -47,6 +56,21 @@ dependencies:
   flutter_bloc: ^8.1.3
   logger: ^1.4.0
   intl: ^0.18.0
+  dio: ^5.2.0
+  shared_preferences: ^2.1.2
+  uuid: ^3.0.7
+  device_info_plus: ^9.0.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.5
+  hive_generator: ^2.0.0
+
 ```
 
 
@@ -54,10 +78,10 @@ dependencies:
 
 ```dart
 - domain
+  - api // Dio, интерсепторы, apiClient
   - entity
-  - facade
-  - mock
-  - provider
+  - service //Контроллер для работы с сервером
+  - provider //Контроллер для работы с локальным хранилищем
 - screen // Папка экранов
   - note // Экран
     - cubit // Модель экрана
@@ -93,6 +117,50 @@ cd note
 ```bash
 flutter pub get
 ```
+
+3. Создать два файла:
+
+```bash
+touch lib/domain/api/client/token.dart
+```
+
+token.dart
+
+```dart
+abstract class Token {
+  static const String _token = 'your_token';
+
+  static String get token => _token;
+}
+```
+
+```bash
+touch lib/domain/api/client/url.dart
+```
+
+url.dart
+
+```dart
+abstract class URLs {
+  static const String getAll = 'https://[path]/list';
+  static const String patch = 'https://[path]/list';
+  static const String post = 'https://[path]/list';
+  static String get(String id) {
+    return 'https://[path]/list/$id';
+  }
+
+  static String delete(String id) {
+    return 'https://[path]/list/$id';
+  }
+
+  static String put(String id) {
+    return 'https://[path]/list/$id';
+  }
+}
+
+```
+
+
 4. Подключите свое устройство или эмулятор и выполните следующую команду:
 
 ```bash
@@ -107,21 +175,41 @@ flutter run
 
 [lib/domain/entity/task.dart](https://github.com/latrygin/note/blob/main/lib/domain/entity/task.dart)
 ```dart
+
+@HiveType(typeId: 1)
 class Task {
-  int id;
-  String text;
-  TaskImportant important;
-  DateTime? deadline;
-  bool done;
-  String? color;
-  DateTime? createdAt;
-  DateTime? changedAt;
-  int? lastUpdatedBy;
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
+  final String text;
+
+  @HiveField(2)
+  final TaskImportant importance;
+
+  @HiveField(3)
+  final DateTime? deadline;
+
+  @HiveField(4)
+  final bool done;
+
+  @HiveField(5)
+  final String? color;
+
+  @HiveField(6)
+  final DateTime? createdAt;
+
+  @HiveField(7)
+  final DateTime? changedAt;
+
+  @HiveField(8)
+  final String? lastUpdatedBy;
+
 
   Task({
     required this.id,
     required this.text,
-    this.important = TaskImportant.basic,
+    this.importance = TaskImportant.basic,
     this.deadline,
     this.done = false,
     this.color,
@@ -129,38 +217,40 @@ class Task {
     this.changedAt,
     this.lastUpdatedBy,
   });
-}
+
 
 ```
 
-Пример, интерфейса для работы с Task
+### Пример, интерфейса для работы с local storage
 
-[lib/domain/facade/task_facade.dart](https://github.com/latrygin/note/blob/main/lib/domain/facade/task_facade.dart)
 ```dart
-abstract class TaskFacade {
-  Future<List<Task>> getAll({FilterTask filter = FilterTask.all});
-  Future<Task> getAt(int index);
-  Future<void> removeAt(int index);
-  Future<void> updateAt({
-    required int index,
-    String? text,
-    TaskImportant? important,
-    DateTime? deadline,
-    bool? done,
-  });
-  Future<void> add({
-    required String text,
-    required TaskImportant important,
-    DateTime? deadline,
-  });
+import 'package:note/domain/entity/task.dart';
+
+abstract class TaskProviderImpl {
+  Future<List<Task>> getAll();
+  Future<Task> getAt(String id);
+  Future<Task> updateAt(Task task);
+  Future<void> removeAt(String id);
+  Future<Task> create(Task task);
+  Future<List<Task>> patch(List<Task> tasks);
 }
+
 ```
 
-и отдельно реализованные классы с моканными данными для будущий класс для работы с локальной базой данных в:
+### Пример, интерфейса для работы с remote storage
 
-[lib/domain/mock/task_mock.dart](https://github.com/latrygin/note/blob/main/lib/domain/mock/task_mock.dart)
+```dart
+import 'package:note/domain/entity/task.dart';
 
-[lib/domain/provider/task_provider.dart](https://github.com/latrygin/note/blob/main/lib/domain/provider/task_provider.dart)
+abstract class TaskServiceImpl {
+  Future<TaskListResponse> getAll();
+  Future<TaskResponse> get(String id);
+  Future<TaskResponse> put(Task request);
+  Future<TaskResponse> delete(String id);
+  Future<TaskResponse> post(Task request);
+  Future<TaskListResponse> patch(TaskListRequest request);
+}
+```
 
 ## Логирование
 
@@ -200,17 +290,26 @@ class NavigationLogger extends NavigatorObserver {
     ...
 ```
 
-В Cubit:
+В API:
 
 ```dart
-  Future<void> initial() async {
+  Future<Response<Map<String, dynamic>>> post(
+    String path, {
+    Map<String, dynamic>? data,
+  }) async {
     try {
-      emit(NoteProgressState(tasks: state.tasks, filter: state.filter));
-      final tasks = await _taskFacade.getAll(filter: state.filter);
-      emit(NoteSuccessState(tasks: tasks, filter: state.filter));
-    } on Object catch (e) {
-      logger.e(e); //
-      emit(NoteFailureState(e.toString()));
+      logger
+        ..v('POST: $path')
+        ..v(data);
+      final response = await _https.post<Map<String, dynamic>>(
+        path,
+        data: data,
+      );
+
+      logger.v(response.data);
+      return response;
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
   }
 
@@ -219,16 +318,33 @@ class NavigationLogger extends NavigatorObserver {
 И main.dart
 
 ```dart
+import 'app.dart';
+
 void main() {
   runZonedGuarded(
-    () {
-      runApp(App(taskFacade: TaskMock()));
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Hive.initFlutter();
+      runApp(
+        App(
+          taskProvider: TaskProvider(),
+          taskService: TaskService(),
+          localRevisionProvider: LocalRevisionProvider(),
+          revisionProvider: RevisionProvider(),
+        ),
+      );
     },
-    (error, stackTrace) => developer.log(
-      error.toString(),
-      stackTrace: stackTrace,
-    ),
+    (error, stackTrace) {
+      log(
+        error.toString(),
+        error: error,
+        stackTrace: stackTrace,
+      );
+      logger.e('main: $error');
+    },
   );
 }
+
+
 ```
 

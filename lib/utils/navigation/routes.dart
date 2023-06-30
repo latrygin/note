@@ -17,7 +17,7 @@ abstract class RoutesBuilder {
   static final routes = <String, Widget Function(BuildContext)>{
     RouteNames.notes: (_) => const NotesPage(),
     RouteNames.note: (context) => NotePage(
-          id: ModalRoute.of(context)?.settings.arguments as int?,
+          id: ModalRoute.of(context)?.settings.arguments as String?,
         ),
   };
 
@@ -31,7 +31,9 @@ abstract class RoutesBuilder {
 
       case RouteNames.note:
         return MaterialPageRoute<int?>(
-          builder: (_) =>  NotePage(id: settings.arguments as int?,),
+          builder: (_) => NotePage(
+            id: settings.arguments as String?,
+          ),
           settings: settings,
         );
     }

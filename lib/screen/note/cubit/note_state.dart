@@ -1,43 +1,66 @@
 import 'package:equatable/equatable.dart';
 import 'package:note/domain/entity/task.dart';
 
-class NoteState extends Equatable {
-  final int? id;
-  final String? text;
-  final TaskImportant important;
-  final DateTime? deadline;
+sealed class NoteState extends Equatable {
+  Task get task => Task.create('');
+  bool get create => true;
 
-  const NoteState(
-    this.id, {
-    this.text,
-    this.important = TaskImportant.basic,
-    this.deadline,
-  });
+  const NoteState();
+}
 
-  NoteState copyWith({
-    String? text,
-    TaskImportant? important,
-    DateTime? deadline,
-  }) {
-    return NoteState(
-      id,
-      text: text ?? this.text,
-      important: important ?? this.important,
-      deadline: deadline ?? this.deadline,
-    );
-  }
+final class NoteInitialState extends NoteState {
+  const NoteInitialState();
+  @override
+  List<Object?> get props => [];
+}
 
-  NoteState setDate({
-    DateTime? day,
-  }) {
-    return NoteState(
-      id,
-      text: text,
-      important: important,
-      deadline: day,
-    );
-  }
+final class NoteProgressState extends NoteState {
+  @override
+  final bool create;
 
   @override
-  List<Object?> get props => [id, text, important, deadline];
+  final Task task;
+
+  const NoteProgressState({
+    required this.task,
+    required this.create,
+  });
+
+  @override
+  List<Object?> get props => [task, create];
+}
+
+final class NoteSuccessState extends NoteState {
+  @override
+  final bool create;
+
+  @override
+  final Task task;
+
+  const NoteSuccessState({
+    required this.task,
+    required this.create,
+  });
+
+  @override
+  List<Object?> get props => [task, create];
+}
+
+final class NoteFailureState extends NoteState {
+  final Exception error;
+
+  @override
+  final Task task;
+
+  @override
+  final bool create;
+
+  const NoteFailureState({
+    required this.error,
+    required this.task,
+    required this.create,
+  });
+
+  @override
+  List<Object?> get props => [error, task, create];
 }
