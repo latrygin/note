@@ -1,4 +1,4 @@
-abstract class LocalRevisionProviderImpl {
+abstract class RevisionLocalDatasourceImpl {
   Future<void> set(bool localRevision);
   bool get();
 }

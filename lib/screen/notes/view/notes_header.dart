@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/core/l10n/s.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/screen/notes/cubit/notes_cubit.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
-import 'package:note/utils/l10n/s.dart';
 
 class NotesHeader extends StatelessWidget {
   const NotesHeader({super.key, required this.isActive});

@@ -1,18 +1,18 @@
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:note/domain/api/client/api_client.dart';
-import 'package:note/domain/api/client/url.dart';
-import 'package:note/domain/api/request/task_list_request.dart';
-import 'package:note/domain/api/request/task_request.dart';
-import 'package:note/domain/api/response/task_list_response.dart';
-import 'package:note/domain/api/response/task_response.dart';
+import 'package:note/core/api/client/api_client.dart';
+import 'package:note/core/api/client/url.dart';
+import 'package:note/core/api/request/task_list_request.dart';
+import 'package:note/core/api/request/task_request.dart';
+import 'package:note/core/api/response/task_list_response.dart';
+import 'package:note/core/api/response/task_response.dart';
 import 'package:note/domain/entity/task.dart';
-import 'package:note/domain/provider/revision/revision_provider.dart';
+import 'package:note/domain/repository/task_remote_impl.dart';
 
-import 'task_service_impl.dart';
+import 'revision_remote.dart';
 
-class TaskService implements TaskServiceImpl {
+class TaskRemoteDatasource implements TaskRemoteDatasourceImpl {
   final _https = ApiClient();
-  final _revision = RevisionProvider();
+  final _revision = RevisionRemoteDatasource();
   final _device = DeviceInfoPlugin();
   @override
   Future<TaskListResponse> getAll() async {

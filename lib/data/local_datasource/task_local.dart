@@ -1,10 +1,9 @@
 import 'package:isar/isar.dart';
 import 'package:note/domain/entity/task.dart';
+import 'package:note/domain/repository/task_local_impl.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'task_provider_impl.dart';
-
-class TaskProviderIsar implements TaskProviderImpl {
+class TaskLocalDatasource implements TaskLocalDatasourceImpl {
   Isar? _isar;
 
   Future<Isar> get _box async {

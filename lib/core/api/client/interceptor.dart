@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:note/domain/provider/revision/revision_provider.dart';
-import 'package:note/utils/exception/exception.dart';
+import 'package:note/core/exception/exception.dart';
+import 'package:note/data/remote_datasource/revision_remote.dart';
 
 import 'token.dart';
 
 class AuthInterceptor extends Interceptor {
-  final _revision = RevisionProvider();
+  final _revision = RevisionRemoteDatasource();
 
   @override
   void onRequest(

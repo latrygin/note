@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/core/l10n/s.dart';
 import 'package:note/screen/note/cubit/note_state.dart';
 import 'package:note/screen/note/note.dart';
-import 'package:note/utils/l10n/s.dart';
 
 class InputTitleWidget extends StatelessWidget {
   const InputTitleWidget({super.key});

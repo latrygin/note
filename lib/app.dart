@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:note/domain/provider/revision/local_revision_provider_impl.dart';
-import 'package:note/domain/provider/revision/revision_provider_impl.dart';
-import 'package:note/domain/provider/task/task_provider_impl.dart';
-import 'package:note/domain/service/task/task_service_impl.dart';
-import 'package:note/utils/l10n/s.dart';
-import 'package:note/utils/navigation/navigation.dart';
-import 'package:note/utils/navigation/routes.dart';
+import 'package:note/core/l10n/s.dart';
+import 'package:note/core/navigation/navigation.dart';
+import 'package:note/core/navigation/routes.dart';
+import 'package:note/domain/repository/revision_local_impl.dart';
+import 'package:note/domain/repository/revision_remote_impl.dart';
+import 'package:note/domain/repository/task_local_impl.dart';
+import 'package:note/domain/repository/task_remote_impl.dart';
 
 import 'utils/theme/theme.dart';
 
 class App extends StatelessWidget {
-  final TaskProviderImpl _taskProvider;
-  final TaskServiceImpl _taskService;
-  final LocalRevisionProviderImpl _localRevisionProvider;
-  final RevisionProviderImpl _revisionProvider;
+  final TaskLocalDatasourceImpl _taskLocalDatasource;
+  final TaskRemoteDatasourceImpl _taskRemoteDatasource;
+  final RevisionLocalDatasourceImpl _revisionLocalDatasource;
+  final RevisionRemoteDatasourceImpl _revisionRemoteDatasource;
+
   const App({
     super.key,
-    required TaskProviderImpl taskProvider,
-    required TaskServiceImpl taskService,
-    required LocalRevisionProviderImpl localRevisionProvider,
-    required RevisionProviderImpl revisionProvider,
-  })  : _taskProvider = taskProvider,
-        _taskService = taskService,
-        _localRevisionProvider = localRevisionProvider,
-        _revisionProvider = revisionProvider;
+    required TaskLocalDatasourceImpl taskLocalDatasource,
+    required TaskRemoteDatasourceImpl taskRemoteDatasource,
+    required RevisionLocalDatasourceImpl revisionLocalDatasource,
+    required RevisionRemoteDatasourceImpl revisionRemoteDatasource,
+  })  : _taskLocalDatasource = taskLocalDatasource,
+        _taskRemoteDatasource = taskRemoteDatasource,
+        _revisionLocalDatasource = revisionLocalDatasource,
+        _revisionRemoteDatasource = revisionRemoteDatasource;
 
   static const String _title = 'Note';
 
@@ -33,23 +34,23 @@ class App extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         ///Local storage for Task
-        RepositoryProvider<TaskProviderImpl>(
-          create: (context) => _taskProvider,
+        RepositoryProvider<TaskLocalDatasourceImpl>(
+          create: (context) => _taskLocalDatasource,
         ),
 
         ///Remote storage for Task
-        RepositoryProvider<TaskServiceImpl>(
-          create: (context) => _taskService,
+        RepositoryProvider<TaskRemoteDatasourceImpl>(
+          create: (context) => _taskRemoteDatasource,
         ),
 
         ///Remote storage for Local Revision
-        RepositoryProvider<LocalRevisionProviderImpl>(
-          create: (context) => _localRevisionProvider,
+        RepositoryProvider<RevisionLocalDatasourceImpl>(
+          create: (context) => _revisionLocalDatasource,
         ),
 
         ///Remote storage for Revision
-        RepositoryProvider<RevisionProviderImpl>(
-          create: (context) => _revisionProvider,
+        RepositoryProvider<RevisionRemoteDatasourceImpl>(
+          create: (context) => _revisionRemoteDatasource,
         ),
       ],
       child: MaterialApp(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/core/l10n/s.dart';
 import 'package:note/screen/notes/notes.dart';
-import 'package:note/utils/l10n/s.dart';
 
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});

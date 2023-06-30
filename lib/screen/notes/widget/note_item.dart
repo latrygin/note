@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:note/core/navigation/navigation.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/screen/notes/notes.dart';
-import 'package:note/utils/navigation/navigation.dart';
 import 'package:note/utils/theme/theme.dart';
 
 class NoteWidget extends StatelessWidget {

@@ -1,27 +1,27 @@
 import 'package:bloc/bloc.dart';
+import 'package:note/core/exception/exception.dart';
+import 'package:note/core/navigation/navigation.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
-import 'package:note/domain/provider/revision/local_revision_provider_impl.dart';
-import 'package:note/domain/provider/task/task_provider_impl.dart';
-import 'package:note/domain/service/task/task_service_impl.dart';
-import 'package:note/utils/exception/exception.dart';
+import 'package:note/domain/repository/revision_remote_impl.dart';
+import 'package:note/domain/repository/task_local_impl.dart';
+import 'package:note/domain/repository/task_remote_impl.dart';
 import 'package:note/utils/logger/logger.dart';
-import 'package:note/utils/navigation/navigation.dart';
 
 import 'note_state.dart';
 
 class NoteCubit extends Cubit<NoteState> {
-  final TaskProviderImpl _taskProvider;
-  final TaskServiceImpl _taskService;
-  final LocalRevisionProviderImpl _localRevisionProvider;
+  final TaskLocalDatasourceImpl _taskLocalDatasource;
+  final TaskRemoteDatasourceImpl _taskRemoteDatasource;
+  final RevisionLocalDatasourceImpl _revisionLocalDatasource;
 
   NoteCubit({
-    required TaskProviderImpl taskProvider,
-    required TaskServiceImpl taskService,
-    required LocalRevisionProviderImpl localRevisionProvider,
-  })  : _taskProvider = taskProvider,
-        _taskService = taskService,
-        _localRevisionProvider = localRevisionProvider,
+    required TaskLocalDatasourceImpl taskLocalDatasource,
+    required TaskRemoteDatasourceImpl taskRemoteDatasource,
+    required RevisionLocalDatasourceImpl revisionLocalDatasource,
+  })  : _taskLocalDatasource = taskLocalDatasource,
+        _taskRemoteDatasource = taskRemoteDatasource,
+        _revisionLocalDatasource = revisionLocalDatasource,
         super(const NoteInitialState());
 
   Future<void> initial(String? id) async {
@@ -35,7 +35,7 @@ class NoteCubit extends Cubit<NoteState> {
           ),
         );
       } else {
-        final localTask = await _taskProvider.getAt(id);
+        final localTask = await _taskLocalDatasource.getAt(id);
 
         emit(
           NoteSuccessState(
@@ -45,7 +45,7 @@ class NoteCubit extends Cubit<NoteState> {
         );
 
         ///GET task
-        final task = await _taskService.get(id);
+        final task = await _taskRemoteDatasource.get(id);
 
         ///Set "Edit" state
         emit(
@@ -57,7 +57,7 @@ class NoteCubit extends Cubit<NoteState> {
       }
     } on NotInternetException catch (_) {
       logger.i('Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NoteSuccessState(
           task: state.task,
@@ -95,7 +95,7 @@ class NoteCubit extends Cubit<NoteState> {
           ),
         );
 
-        final localTask = await _taskProvider.create(state.task);
+        final localTask = await _taskLocalDatasource.create(state.task);
 
         emit(
           NoteProgressState(
@@ -105,7 +105,7 @@ class NoteCubit extends Cubit<NoteState> {
         );
 
         ///Create task
-        final task = await _taskService.post(state.task);
+        final task = await _taskRemoteDatasource.post(state.task);
 
         ///Set Success State
         emit(
@@ -123,10 +123,10 @@ class NoteCubit extends Cubit<NoteState> {
           ),
         );
 
-        await _taskProvider.updateAt(state.task);
+        await _taskLocalDatasource.updateAt(state.task);
 
         ///Create task
-        final task = await _taskService.put(state.task);
+        final task = await _taskRemoteDatasource.put(state.task);
 
         ///Set Success State
         emit(
@@ -138,7 +138,7 @@ class NoteCubit extends Cubit<NoteState> {
       }
     } on NotInternetException catch (_) {
       logger.i('SAVE TASK: Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NoteSuccessState(
           task: state.task,
@@ -174,13 +174,13 @@ class NoteCubit extends Cubit<NoteState> {
           create: state.create,
         ),
       );
-      await _taskProvider.removeAt(state.task.id);
+      await _taskLocalDatasource.removeAt(state.task.id);
 
       /// Delete task
-      await _taskService.delete(state.task.id);
+      await _taskRemoteDatasource.delete(state.task.id);
     } on NotInternetException catch (_) {
       logger.i('DELETE TASK: Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NoteSuccessState(
           task: state.task,
