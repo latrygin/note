@@ -1,0 +1,31 @@
+# .github/workflows/main.yml
+
+name: main
+
+on: [push, workflow_dispatch]
+
+jobs:
+  android:
+    runs-on: macos-11
+    strategy:
+      matrix:
+        api-level:
+          - 29
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install Flutter dependencies
+        run: flutter pub get
+      - name: Run flutter tests
+        run: flutter test
+      - name: Run integration tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          profile: Nexus 6
+          script: flutter test integration_test --verbose
