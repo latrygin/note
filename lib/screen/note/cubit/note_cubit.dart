@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:note/core/exception/exception.dart';
-import 'package:note/core/navigation/navigation.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/domain/repository/revision_remote_impl.dart';
@@ -200,17 +199,12 @@ class NoteCubit extends Cubit<NoteState> {
         ),
       );
     } finally {
-      NavigationManager.instance.popToHome();
+      // NavigationManager.instance.popToHome();
+      ///TODO(pop task)
     }
   }
 
   void setTitle(String text) {
-    emit(
-      NoteProgressState(
-        task: state.task,
-        create: state.create,
-      ),
-    );
     emit(
       NoteSuccessState(
         task: state.task.copyWith(text: text),
@@ -221,12 +215,6 @@ class NoteCubit extends Cubit<NoteState> {
 
   void setPriority(TaskImportant important) {
     emit(
-      NoteProgressState(
-        task: state.task,
-        create: state.create,
-      ),
-    );
-    emit(
       NoteSuccessState(
         task: state.task.copyWith(importance: important),
         create: state.create,
@@ -235,12 +223,6 @@ class NoteCubit extends Cubit<NoteState> {
   }
 
   void setDate(DateTime? deadline) {
-    emit(
-      NoteProgressState(
-        task: state.task,
-        create: state.create,
-      ),
-    );
     emit(
       NoteSuccessState(
         task: state.task.setDate(deadline),

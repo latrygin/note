@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note/core/exception/exception.dart';
 import 'package:note/core/l10n/s.dart';
-import 'package:note/core/navigation/navigation.dart';
+import 'package:note/core/navigation/delegate.dart';
 import 'package:note/screen/notes/cubit/notes_cubit.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 
@@ -66,7 +66,11 @@ class _NotesBodyState extends State<NotesBody> with RouteAware {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => NavigationManager.instance.openTask(null),
+          onPressed: () {
+            context.read<TaskRouterDelegate>().gotoCreateTask();
+
+            ///TODO(open task for create)
+          },
           child: const Icon(Icons.add),
         ),
       ),
@@ -76,15 +80,16 @@ class _NotesBodyState extends State<NotesBody> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    NavigationManager.instance.routeAwareObserver.subscribe(
-      this,
-      ModalRoute.of(context)!,
-    );
+    WidgetsBinding.instance.endOfFrame.then((value) {
+      context
+          .read<RouteObserver>()
+          .subscribe(this, ModalRoute.of(context) as PageRoute);
+    });
   }
 
   @override
   void dispose() {
-    NavigationManager.instance.routeAwareObserver.unsubscribe(this);
+    context.read<RouteObserver>().unsubscribe(this);
     _scrollController.dispose();
     super.dispose();
   }
