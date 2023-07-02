@@ -13,6 +13,7 @@ class NoteHeader extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 4,
       leading: IconButton(
+        key: const ValueKey('BackButton'),
         onPressed: () {
           context.read<TaskRouterDelegate>().gotoHome();
 
@@ -22,6 +23,7 @@ class NoteHeader extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         TextButton(
+          key: const ValueKey('SaveButton'),
           onPressed: () => context.read<NoteCubit>().saveTask(),
           child: Text(S.of(context).get(SName.save)),
         ),

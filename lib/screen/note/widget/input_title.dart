@@ -19,6 +19,7 @@ class InputTitleWidget extends StatelessWidget {
           ),
           child: state.create
               ? TextField(
+                  key: const ValueKey('TextForm'),
                   minLines: 4,
                   maxLines: 100,
                   onChanged: (title) =>
@@ -29,6 +30,7 @@ class InputTitleWidget extends StatelessWidget {
                   ),
                 )
               : TextFormField(
+                  key: const ValueKey('TextForm'),
                   initialValue: state.task.text,
                   minLines: 4,
                   maxLines: 100,

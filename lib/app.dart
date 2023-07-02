@@ -69,6 +69,7 @@ class App extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return MaterialApp.router(
+            key: const ValueKey('Material'),
             title: _title,
 
             ///localizations
