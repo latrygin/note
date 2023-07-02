@@ -5,27 +5,33 @@ name: main
 on: [push, workflow_dispatch]
 
 jobs:
-  android:
-    runs-on: macos-11
-    strategy:
-      matrix:
-        api-level:
-          - 29
-      fail-fast: true
+  build:
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Flutter SDK
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-      - name: Install Flutter dependencies
+          flutter-version: '3.10.5'
+          channel: 'stable'
+      - run: flutter build apk
+
+      - name: Install dependencies
         run: flutter pub get
-      - name: Run flutter tests
+
+      - name: Run unit tests
         run: flutter test
+
       - name: Run integration tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v1
         with:
-          api-level: ${{ matrix.api-level }}
-          arch: x86_64
-          profile: Nexus 6
-          script: flutter test integration_test --verbose
+          api-level: 29
+          script: flutter test integration_test
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/apk/release/app-release.apk
