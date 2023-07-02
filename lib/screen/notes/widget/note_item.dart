@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:note/core/navigation/delegate.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/screen/notes/notes.dart';
-import 'package:note/utils/navigation/navigation.dart';
 import 'package:note/utils/theme/theme.dart';
 
 class NoteWidget extends StatelessWidget {
@@ -48,7 +48,10 @@ class NoteWidget extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 6.0),
-        onTap: () => NavigationManager.instance.openTask(task.id),
+        onTap: () {
+          ///TODO(open task for edit)
+          context.read<TaskRouterDelegate>().gotoTask(task.id);
+        },
         leading: Checkbox.adaptive(
           fillColor: MaterialStateProperty.resolveWith(
             task.done
@@ -99,7 +102,11 @@ class NoteWidget extends StatelessWidget {
                 style: const TextStyle(color: Colors.deepPurple),
               ),
         trailing: IconButton(
-          onPressed: () => NavigationManager.instance.openTask(task.id),
+          onPressed: () {
+            context.read<TaskRouterDelegate>().gotoTask(task.id);
+
+            ///TODO(open task for edit)
+          },
           icon: const Icon(
             Icons.info_outline,
             color: FlutterTheme.labelTertiaryLight,

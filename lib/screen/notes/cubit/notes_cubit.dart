@@ -1,25 +1,25 @@
 import 'package:bloc/bloc.dart';
-import 'package:note/domain/api/request/task_list_request.dart';
+import 'package:note/core/api/request/task_list_request.dart';
+import 'package:note/core/exception/exception.dart';
 import 'package:note/domain/entity/task.dart';
-import 'package:note/domain/provider/revision/local_revision_provider_impl.dart';
-import 'package:note/domain/provider/task/task_provider_impl.dart';
-import 'package:note/domain/service/task/task_service_impl.dart';
+import 'package:note/domain/repository/revision_remote_impl.dart';
+import 'package:note/domain/repository/task_local_impl.dart';
+import 'package:note/domain/repository/task_remote_impl.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
-import 'package:note/utils/exception/not_internet_exception.dart';
 import 'package:note/utils/logger/logger.dart';
 
 class NotesCubit extends Cubit<NotesState> {
-  final TaskProviderImpl _taskProvider;
-  final TaskServiceImpl _taskService;
-  final LocalRevisionProviderImpl _localRevisionProvider;
+  final TaskLocalDatasourceImpl _taskLocalDatasource;
+  final TaskRemoteDatasourceImpl _taskRemoteDatasource;
+  final RevisionLocalDatasourceImpl _revisionLocalDatasource;
 
   NotesCubit({
-    required TaskProviderImpl taskProvider,
-    required TaskServiceImpl taskService,
-    required LocalRevisionProviderImpl localRevisionProvider,
-  })  : _taskProvider = taskProvider,
-        _taskService = taskService,
-        _localRevisionProvider = localRevisionProvider,
+    required TaskLocalDatasourceImpl taskLocalDatasource,
+    required TaskRemoteDatasourceImpl taskRemoteDatasource,
+    required RevisionLocalDatasourceImpl revisionLocalDatasource,
+  })  : _taskLocalDatasource = taskLocalDatasource,
+        _taskRemoteDatasource = taskRemoteDatasource,
+        _revisionLocalDatasource = revisionLocalDatasource,
         super(const NotesInitialState());
 
   Future<void> initial() async {
@@ -33,7 +33,7 @@ class NotesCubit extends Cubit<NotesState> {
       );
 
       ///Get all tasks from local storage
-      final localTasks = await _taskProvider.getAll();
+      final localTasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
       emit(
@@ -43,9 +43,9 @@ class NotesCubit extends Cubit<NotesState> {
         ),
       );
 
-      if (_localRevisionProvider.get()) {
+      if (_revisionLocalDatasource.get()) {
         logger.i('Новые задачи, о которых не знает сервер');
-        final taskListRequest = await _taskService.patch(
+        final taskListRequest = await _taskRemoteDatasource.patch(
           TaskListRequest(list: localTasks),
         );
         emit(
@@ -54,13 +54,13 @@ class NotesCubit extends Cubit<NotesState> {
             filter: state.filter,
           ),
         );
-        await _localRevisionProvider.set(false);
+        await _revisionLocalDatasource.set(false);
         return;
       } else {
         ///Get all tasks
-        final remoteTasks = await _taskService.getAll();
+        final remoteTasks = await _taskRemoteDatasource.getAll();
 
-        await _taskProvider.patch(remoteTasks.list);
+        await _taskLocalDatasource.patch(remoteTasks.list);
 
         ///Start Success State
         emit(
@@ -73,7 +73,7 @@ class NotesCubit extends Cubit<NotesState> {
       }
     } on NotInternetException catch (_) {
       logger.i('Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NotesSuccessState(
           tasks: state.tasks,
@@ -115,9 +115,9 @@ class NotesCubit extends Cubit<NotesState> {
       );
 
       ///Update local task
-      await _taskProvider.updateAt(task);
+      await _taskLocalDatasource.updateAt(task);
 
-      final tasks = await _taskProvider.getAll();
+      final tasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
       emit(
@@ -128,7 +128,7 @@ class NotesCubit extends Cubit<NotesState> {
       );
 
       ///Change task
-      await _taskService.put(task);
+      await _taskRemoteDatasource.put(task);
 
       ///Start Success State
       emit(
@@ -139,7 +139,7 @@ class NotesCubit extends Cubit<NotesState> {
       );
     } on NotInternetException catch (_) {
       logger.i('DO TASK: Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NotesSuccessState(
           tasks: state.tasks,
@@ -178,9 +178,9 @@ class NotesCubit extends Cubit<NotesState> {
       final id = state.tasks![index].id;
 
       ///Update local task
-      await _taskProvider.removeAt(id);
+      await _taskLocalDatasource.removeAt(id);
 
-      final tasks = await _taskProvider.getAll();
+      final tasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
       emit(
@@ -191,7 +191,7 @@ class NotesCubit extends Cubit<NotesState> {
       );
 
       ///Delete task
-      await _taskService.delete(id);
+      await _taskRemoteDatasource.delete(id);
 
       ///Start Success State
       emit(
@@ -202,7 +202,7 @@ class NotesCubit extends Cubit<NotesState> {
       );
     } on NotInternetException catch (_) {
       logger.i('DELETE TASK: Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NotesSuccessState(
           tasks: state.tasks,
@@ -241,9 +241,9 @@ class NotesCubit extends Cubit<NotesState> {
 
         final task = Task.create(text);
 
-        await _taskProvider.create(task);
+        await _taskLocalDatasource.create(task);
 
-        final tasks = await _taskProvider.getAll();
+        final tasks = await _taskLocalDatasource.getAll();
 
         emit(
           NotesTemporaryState(
@@ -253,7 +253,7 @@ class NotesCubit extends Cubit<NotesState> {
         );
 
         ///Create task
-        await _taskService.post(task);
+        await _taskRemoteDatasource.post(task);
 
         ///Start Success State
         emit(
@@ -265,7 +265,7 @@ class NotesCubit extends Cubit<NotesState> {
       }
     } on NotInternetException catch (_) {
       logger.i('ADD TASK: Нет интернета');
-      await _localRevisionProvider.set(true);
+      await _revisionLocalDatasource.set(true);
       emit(
         NotesSuccessState(
           tasks: state.tasks,

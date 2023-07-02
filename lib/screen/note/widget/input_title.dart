@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note/core/l10n/s.dart';
 import 'package:note/screen/note/cubit/note_state.dart';
 import 'package:note/screen/note/note.dart';
-import 'package:note/utils/l10n/s.dart';
 
 class InputTitleWidget extends StatelessWidget {
   const InputTitleWidget({super.key});
@@ -19,6 +19,7 @@ class InputTitleWidget extends StatelessWidget {
           ),
           child: state.create
               ? TextField(
+                  key: const ValueKey('TextForm'),
                   minLines: 4,
                   maxLines: 100,
                   onChanged: (title) =>
@@ -29,6 +30,7 @@ class InputTitleWidget extends StatelessWidget {
                   ),
                 )
               : TextFormField(
+                  key: const ValueKey('TextForm'),
                   initialValue: state.task.text,
                   minLines: 4,
                   maxLines: 100,
