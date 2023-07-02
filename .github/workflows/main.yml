@@ -1,40 +1,39 @@
-# .github/workflows/main.yml
-
-# Name of your workflow.
 name: main
 
-# Trigger the workflow manually or after push a commit
 on: [push, workflow_dispatch]
 
-# 2 jobs are configured.
-# The first one runs tests on iOS devices.
-# The second runs tests on Android devices
 jobs:
-  # job responsible for running Flutter tests on Android devices
   android:
     runs-on: macos-11
     strategy:
       matrix:
         api-level:
           - 29
-          # you can add more API level if you want to run your tests on different API
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
+      
+      
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-#           flutter-version: '<FLUTTER_VERSION>'
+          
+          
       - name: Set up JDK 11
         uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.11.0
         with:
           java-version: 11
           distribution: temurin
+          
+          
       - name: Install Flutter dependencies
         run: flutter pub get
+        
+      - name: Run unit tests
+        run: flutter test
+        
       - name: Run integration tests
-        # more info on https://github.com/ReactiveCircus/android-emulator-runner
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
