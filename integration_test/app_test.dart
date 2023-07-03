@@ -32,9 +32,9 @@ void main() async {
 
     logger.v('Ищу testKeyFloating...');
     expect(find.byKey(testKeyFloating), findsWidgets);
-    logger.v('Нашёл testKeyFloating');
-
-    logger.v('Нажимаю на  testKeyFloating');
+    logger
+      ..v('Нашёл testKeyFloating')
+      ..v('Нажимаю на  testKeyFloating');
     await tester.tap(find.byKey(testKeyFloating));
     await tester.pumpAndSettle();
 

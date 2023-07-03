@@ -3,7 +3,7 @@ import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/repository/task_local_impl.dart';
 import 'package:path_provider/path_provider.dart';
 
-class TaskLocalDatasource implements TaskLocalDatasourceImpl {
+class TaskLocal implements TaskLocalDatasource {
   Isar? _isar;
 
   Future<Isar> get _box async {

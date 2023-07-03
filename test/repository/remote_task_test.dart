@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('REMOTE TASK', () {
-    late TaskRemoteDatasourceImpl taskRemoteDatasource;
+    late TaskRemoteDatasource taskRemoteDatasource;
     var tasks = <Task>[
       Task.create('test1'),
       Task.create('test2'),

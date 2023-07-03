@@ -10,9 +10,9 @@ import 'package:note/domain/repository/task_remote_impl.dart';
 
 import 'revision_remote.dart';
 
-class TaskRemoteDatasource implements TaskRemoteDatasourceImpl {
+class TaskRemote implements TaskRemoteDatasource {
   final _https = ApiClient();
-  final _revision = RevisionRemoteDatasource();
+  final _revision = RevisionRemote();
   final _device = DeviceInfoPlugin();
   @override
   Future<TaskListResponse> getAll() async {

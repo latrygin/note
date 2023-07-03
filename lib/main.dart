@@ -16,10 +16,10 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       runApp(
         App(
-          taskLocalDatasource: TaskLocalDatasource(),
-          taskRemoteDatasource: TaskRemoteDatasource(),
-          revisionLocalDatasource: RevisionLocalDatasource(),
-          revisionRemoteDatasource: RevisionRemoteDatasource(),
+          taskLocalDatasource: TaskLocal(),
+          taskRemoteDatasource: TaskRemote(),
+          revisionLocalDatasource: RevisionLocal(),
+          revisionRemoteDatasource: RevisionRemote(),
           taskRouterDelegate: TaskRouterDelegate(),
         ),
       );

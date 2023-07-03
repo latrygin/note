@@ -5,7 +5,7 @@ import 'package:note/core/exception/exception.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/repository/task_remote_impl.dart';
 
-class TaskRemoteMock implements TaskRemoteDatasourceImpl {
+class TaskRemoteMock implements TaskRemoteDatasource {
   final List<Task> _tasks = <Task>[];
 
   @override

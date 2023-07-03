@@ -3,7 +3,7 @@ import 'package:note/core/api/response/task_list_response.dart';
 import 'package:note/core/api/response/task_response.dart';
 import 'package:note/domain/entity/task.dart';
 
-abstract class TaskRemoteDatasourceImpl {
+abstract class TaskRemoteDatasource {
   Future<TaskListResponse> getAll();
   Future<TaskResponse> get(String id);
   Future<TaskResponse> put(Task request);

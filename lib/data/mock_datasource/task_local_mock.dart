@@ -2,7 +2,7 @@ import 'package:note/core/exception/not_found_exception.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/repository/task_local_impl.dart';
 
-class TaskLocalMock implements TaskLocalDatasourceImpl {
+class TaskLocalMock implements TaskLocalDatasource {
   List<Task> _tasks = <Task>[
     Task.create('text1'),
     Task.create('text2'),

@@ -9,14 +9,14 @@ import 'package:note/screen/notes/cubit/notes_state.dart';
 import 'package:note/utils/logger/logger.dart';
 
 class NotesCubit extends Cubit<NotesState> {
-  final TaskLocalDatasourceImpl _taskLocalDatasource;
-  final TaskRemoteDatasourceImpl _taskRemoteDatasource;
-  final RevisionLocalDatasourceImpl _revisionLocalDatasource;
+  final TaskLocalDatasource _taskLocalDatasource;
+  final TaskRemoteDatasource _taskRemoteDatasource;
+  final RevisionLocalDatasource _revisionLocalDatasource;
 
   NotesCubit({
-    required TaskLocalDatasourceImpl taskLocalDatasource,
-    required TaskRemoteDatasourceImpl taskRemoteDatasource,
-    required RevisionLocalDatasourceImpl revisionLocalDatasource,
+    required TaskLocalDatasource taskLocalDatasource,
+    required TaskRemoteDatasource taskRemoteDatasource,
+    required RevisionLocalDatasource revisionLocalDatasource,
   })  : _taskLocalDatasource = taskLocalDatasource,
         _taskRemoteDatasource = taskRemoteDatasource,
         _revisionLocalDatasource = revisionLocalDatasource,
