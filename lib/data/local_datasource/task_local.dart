@@ -1,9 +1,11 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:isar/isar.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/repository/task_local_impl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class TaskLocal implements TaskLocalDatasource {
+  final _device = DeviceInfoPlugin();
   Isar? _isar;
 
   Future<Isar> get _box async {
@@ -17,11 +19,13 @@ class TaskLocal implements TaskLocalDatasource {
 
   @override
   Future<Task> create(Task task) async {
+    final deviceInfo = await _device.androidInfo;
+    final newTask = task.copyWith(lastUpdatedBy: deviceInfo.id);
     final isar = await _box;
     await isar.writeTxn(() async {
-      await isar.tasks.put(task);
+      await isar.tasks.put(newTask);
     });
-    return task;
+    return newTask;
   }
 
   @override
