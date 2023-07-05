@@ -64,7 +64,7 @@ class TaskLocal implements TaskLocalDatasource {
   Future<Task> updateAt(Task task) async {
     final isar = await _box;
     await isar.writeTxn(() async {
-      await isar.tasks.put(task);
+      await isar.tasks.put(task.copyWith(changedAt: DateTime.now()));
     });
     return task;
   }
