@@ -132,53 +132,10 @@ cd note
 flutter pub get
 ```
 
-3. Создать два файла:
+3. Подключите свое устройство или эмулятор и выполните следующую команду:
 
 ```bash
-touch lib/domain/api/client/token.dart
-```
-
-token.dart
-
-```dart
-abstract class Token {
-  static const String _token = 'your_token';
-
-  static String get token => _token;
-}
-```
-
-```bash
-touch lib/domain/api/client/url.dart
-```
-
-url.dart
-
-```dart
-abstract class URLs {
-  static const String getAll = 'https://[path]/list';
-  static const String patch = 'https://[path]/list';
-  static const String post = 'https://[path]/list';
-  static String get(String id) {
-    return 'https://[path]/list/$id';
-  }
-
-  static String delete(String id) {
-    return 'https://[path]/list/$id';
-  }
-
-  static String put(String id) {
-    return 'https://[path]/list/$id';
-  }
-}
-
-```
-
-
-4. Подключите свое устройство или эмулятор и выполните следующую команду:
-
-```bash
-flutter run
+flutter run --dart-define=TOKEN=YOUR_TOKEN --dart-define=PATH=YOUR_PATH
 ```
 
 ## Реализация
