@@ -5,7 +5,9 @@ import 'package:note/domain/repository/task_local_impl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class TaskLocal implements TaskLocalDatasource {
-  final _device = DeviceInfoPlugin();
+  final DeviceInfoPlugin _device;
+  TaskLocal({required DeviceInfoPlugin device}) : _device = device;
+
   Isar? _isar;
 
   Future<Isar> get _box async {
