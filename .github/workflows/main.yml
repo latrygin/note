@@ -3,7 +3,6 @@ name: main
 on: [push, workflow_dispatch]
 
 jobs:
-
   analyze:
     name: Run analyzer and formatter
     runs-on: ubuntu-latest
