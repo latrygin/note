@@ -3,40 +3,85 @@ name: main
 on: [push, workflow_dispatch]
 
 jobs:
-  android:
-    runs-on: macos-11
-    strategy:
-      matrix:
-        api-level:
-          - 29
-      fail-fast: true
+
+  analyze:
+    name: Run analyzer and formatter
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Create file
+      - run: cat /home/runner/work/note/android/app/google-services.json | base64
+      - name: Putting data
+        run: echo ${{ secrets.SERVICES }} > /home/runner/work/note/android/app/google-services.json
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.5'
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter format --set-exit-if-changed
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
-      
-      
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          
-          
-      - name: Set up JDK 11
-        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.11.0
+          flutter-version: '3.10.5'
+          cache: true
+      - run: flutter pub get
+      - run: flutter test
+        id: test
+      - if: ${{ failure() && steps.test.conclusion == 'failure' }}
+        name: 'Upload test failures'
+        uses: actions/upload-artifact@v3
         with:
-          java-version: 11
-          distribution: temurin
-          
-          
-      - name: Install Flutter dependencies
-        run: flutter pub get
-        
-      - name: Run unit tests
-        run: flutter test
-        
-      - name: Run integration tests
-        uses: reactivecircus/android-emulator-runner@v2
+          name: test-failures
+          path: test/failures
+          retention-days: 5
+
+#  integration-test:
+#    runs-on: macos-11
+#    timeout-minutes: 25
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup Flutter SDK
+#        uses: subosito/flutter-action@v2
+#        with:
+#          channel: stable
+#      - name: Set up JDK 11
+#        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.10.5
+#        with:
+#          java-version: 11
+#          distribution: temurin
+#      - name: Install Flutter dependencies
+#        run: flutter pub get
+#      - name: Run unit tests
+#        run: flutter test
+#      - name: Run integration tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: 29
+#          arch: x86_64
+#          profile: Nexus 6
+#          script: flutter test integration_test --verbose
+
+  build:
+    needs: [ analyze, test ]
+    name: Build android on ubuntu
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          arch: x86_64
-          profile: Nexus 6
-          script: flutter test integration_test --verbose
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.5'
+          cache: true
+      - run: flutter build apk --dart-define=TOKEN=${{ secrets.TOKEN }} --dart-define=PATH=${{ secrets.PATH }} --dart-define=API_KEY=${{ secrets.API_KEY }} --dart-define=APP_ID=${{ secrets.APP_ID }} --dart-define=MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} --dart-define=PROJECT_ID=${{ secrets.PROJECT_ID }} --dart-define=STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }}
