@@ -85,3 +85,4 @@ jobs:
           flutter-version: '3.10.5'
           cache: true
       - run: flutter build apk --dart-define=TOKEN=${{ secrets.TOKEN }} --dart-define=PATH=${{ secrets.PATH }} --dart-define=API_KEY=${{ secrets.API_KEY }} --dart-define=APP_ID=${{ secrets.APP_ID }} --dart-define=MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} --dart-define=PROJECT_ID=${{ secrets.PROJECT_ID }} --dart-define=STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }}
+
