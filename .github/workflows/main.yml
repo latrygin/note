@@ -54,11 +54,8 @@ jobs:
         with:
           java-version: 11
           distribution: temurin
-      - name: Create google-services.json
       - run: cat /home/runner/work/note/note/android/app/google-services.json | base64
-      - name: Set up google-services.json
       - run: echo ${{ secrets.SERVICES }} > /home/runner/work/note/note/android/app/google-services.json
-      - name: Create apk for android
       - run: flutter build apk --dart-define=TOKEN=${{ secrets.TOKEN }} --dart-define=PATH=${{ secrets.PATH }} --dart-define=API_KEY=${{ secrets.API_KEY }} --dart-define=APP_ID=${{ secrets.APP_ID }} --dart-define=MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} --dart-define=PROJECT_ID=${{ secrets.PROJECT_ID }} --dart-define=STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }}
 
 #  integration-test:
