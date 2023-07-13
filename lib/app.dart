@@ -78,7 +78,7 @@ class App extends StatelessWidget {
 
             ///theme
             theme: FlutterTheme.light,
-            //darkTheme: FlutterTheme.dark,
+            darkTheme: FlutterTheme.dark,
 
             ///Navigation
             routerDelegate: context.read<TaskRouterDelegate>(),
