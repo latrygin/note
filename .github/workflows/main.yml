@@ -19,7 +19,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze
-      - run: flutter format --set-exit-if-changed
+      - run: dart format --set-exit-if-changed lib/
 
   test:
     name: Run tests
