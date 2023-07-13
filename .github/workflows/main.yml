@@ -8,10 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-#       - name: Create file
-#       - run: cat /home/runner/work/note/android/app/google-services.json | base64
-#       - name: Putting data
-#         run: echo ${{ secrets.SERVICES }} > /home/runner/work/note/android/app/google-services.json
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
         with:
@@ -83,5 +79,7 @@ jobs:
         with:
           flutter-version: '3.10.5'
           cache: true
+      - run: cat /home/runner/work/note/android/app/google-services.json | base64
+      - run: echo ${{ secrets.SERVICES }} > /home/runner/work/note/android/app/google-services.json
       - run: flutter build apk --dart-define=TOKEN=${{ secrets.TOKEN }} --dart-define=PATH=${{ secrets.PATH }} --dart-define=API_KEY=${{ secrets.API_KEY }} --dart-define=APP_ID=${{ secrets.APP_ID }} --dart-define=MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} --dart-define=PROJECT_ID=${{ secrets.PROJECT_ID }} --dart-define=STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }}
 
