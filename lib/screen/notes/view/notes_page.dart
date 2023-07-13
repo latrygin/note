@@ -13,9 +13,9 @@ class NotesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NotesCubit(
-        taskLocalDatasource: context.read<TaskLocalDatasourceImpl>(),
-        taskRemoteDatasource: context.read<TaskRemoteDatasourceImpl>(),
-        revisionLocalDatasource: context.read<RevisionLocalDatasourceImpl>(),
+        taskLocalDatasource: context.read<TaskLocalDatasource>(),
+        taskRemoteDatasource: context.read<TaskRemoteDatasource>(),
+        revisionLocalDatasource: context.read<RevisionLocalDatasource>(),
       )..initial(),
       child: const NotesBody(),
     );

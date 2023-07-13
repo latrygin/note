@@ -13,9 +13,9 @@ import 'package:test/test.dart';
 void main() {
   group('EDIT: NoteCubit', () {
     late NoteCubit noteCubit;
-    late TaskLocalDatasourceImpl taskLocalMock;
-    late TaskRemoteDatasourceImpl taskRemoteMock;
-    late RevisionLocalDatasourceImpl revisionLocalMock;
+    late TaskLocalDatasource taskLocalMock;
+    late TaskRemoteDatasource taskRemoteMock;
+    late RevisionLocalDatasource revisionLocalMock;
     late Task editTask;
 
     setUpAll(() async {

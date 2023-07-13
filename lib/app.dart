@@ -13,18 +13,18 @@ import 'package:provider/provider.dart';
 import 'utils/theme/theme.dart';
 
 class App extends StatelessWidget {
-  final TaskLocalDatasourceImpl _taskLocalDatasource;
-  final TaskRemoteDatasourceImpl _taskRemoteDatasource;
-  final RevisionLocalDatasourceImpl _revisionLocalDatasource;
-  final RevisionRemoteDatasourceImpl _revisionRemoteDatasource;
+  final TaskLocalDatasource _taskLocalDatasource;
+  final TaskRemoteDatasource _taskRemoteDatasource;
+  final RevisionLocalDatasource _revisionLocalDatasource;
+  final RevisionRemoteDatasource _revisionRemoteDatasource;
   final TaskRouterDelegate _taskRouterDelegate;
 
   const App({
     super.key,
-    required TaskLocalDatasourceImpl taskLocalDatasource,
-    required TaskRemoteDatasourceImpl taskRemoteDatasource,
-    required RevisionLocalDatasourceImpl revisionLocalDatasource,
-    required RevisionRemoteDatasourceImpl revisionRemoteDatasource,
+    required TaskLocalDatasource taskLocalDatasource,
+    required TaskRemoteDatasource taskRemoteDatasource,
+    required RevisionLocalDatasource revisionLocalDatasource,
+    required RevisionRemoteDatasource revisionRemoteDatasource,
     required TaskRouterDelegate taskRouterDelegate,
   })  : _taskLocalDatasource = taskLocalDatasource,
         _taskRemoteDatasource = taskRemoteDatasource,
@@ -39,22 +39,22 @@ class App extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         ///Local storage for Task
-        RepositoryProvider<TaskLocalDatasourceImpl>.value(
+        RepositoryProvider<TaskLocalDatasource>.value(
           value: _taskLocalDatasource,
         ),
 
         ///Remote storage for Task
-        RepositoryProvider<TaskRemoteDatasourceImpl>.value(
+        RepositoryProvider<TaskRemoteDatasource>.value(
           value: _taskRemoteDatasource,
         ),
 
         ///Remote storage for Local Revision
-        RepositoryProvider<RevisionLocalDatasourceImpl>.value(
+        RepositoryProvider<RevisionLocalDatasource>.value(
           value: _revisionLocalDatasource,
         ),
 
         ///Remote storage for Revision
-        RepositoryProvider<RevisionRemoteDatasourceImpl>.value(
+        RepositoryProvider<RevisionRemoteDatasource>.value(
           value: _revisionRemoteDatasource,
         ),
 

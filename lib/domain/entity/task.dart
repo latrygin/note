@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_js_rounded_ints
+
 import 'dart:convert';
 
 import 'package:isar/isar.dart';

@@ -10,14 +10,14 @@ import 'package:note/utils/logger/logger.dart';
 import 'note_state.dart';
 
 class NoteCubit extends Cubit<NoteState> {
-  final TaskLocalDatasourceImpl _taskLocalDatasource;
-  final TaskRemoteDatasourceImpl _taskRemoteDatasource;
-  final RevisionLocalDatasourceImpl _revisionLocalDatasource;
+  final TaskLocalDatasource _taskLocalDatasource;
+  final TaskRemoteDatasource _taskRemoteDatasource;
+  final RevisionLocalDatasource _revisionLocalDatasource;
 
   NoteCubit({
-    required TaskLocalDatasourceImpl taskLocalDatasource,
-    required TaskRemoteDatasourceImpl taskRemoteDatasource,
-    required RevisionLocalDatasourceImpl revisionLocalDatasource,
+    required TaskLocalDatasource taskLocalDatasource,
+    required TaskRemoteDatasource taskRemoteDatasource,
+    required RevisionLocalDatasource revisionLocalDatasource,
   })  : _taskLocalDatasource = taskLocalDatasource,
         _taskRemoteDatasource = taskRemoteDatasource,
         _revisionLocalDatasource = revisionLocalDatasource,

@@ -1,11 +1,11 @@
 import 'package:note/domain/repository/revision_remote_impl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RevisionLocalDatasource implements RevisionLocalDatasourceImpl {
+class RevisionLocal implements RevisionLocalDatasource {
   static const String _key = 'local_revision';
   late SharedPreferences _pref;
 
-  RevisionLocalDatasource() {
+  RevisionLocal() {
     _prefs();
   }
 

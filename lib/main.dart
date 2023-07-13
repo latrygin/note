@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:note/core/api/client/api_client.dart';
 import 'package:note/core/navigation/delegate.dart';
 import 'package:note/data/local_datasource/revision_local.dart';
 import 'package:note/data/local_datasource/task_local.dart';
@@ -16,10 +18,16 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       runApp(
         App(
-          taskLocalDatasource: TaskLocalDatasource(),
-          taskRemoteDatasource: TaskRemoteDatasource(),
-          revisionLocalDatasource: RevisionLocalDatasource(),
-          revisionRemoteDatasource: RevisionRemoteDatasource(),
+          taskLocalDatasource: TaskLocal(
+            device: DeviceInfoPlugin(),
+          ),
+          taskRemoteDatasource: TaskRemote(
+            https: ApiClient(),
+            revision: RevisionRemote(),
+            device: DeviceInfoPlugin(),
+          ),
+          revisionLocalDatasource: RevisionLocal(),
+          revisionRemoteDatasource: RevisionRemote(),
           taskRouterDelegate: TaskRouterDelegate(),
         ),
       );

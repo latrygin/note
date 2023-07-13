@@ -14,22 +14,19 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
 
   String? _taskId;
 
+  @override
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   TaskRouterDelegate()
       : _isHome = true,
-        _isTask = false;
+        _isTask = false,
+        navigatorKey = GlobalKey<NavigatorState>();
 
   bool get isHome => _isHome;
 
   bool get isTask => _isTask && _taskId != null;
 
   bool get isCreateTask => _isTask && _taskId == null;
-
-  @override
-  Future<bool> popRoute() {
-    if (isTask) gotoHome();
-    if (isCreateTask) gotoHome();
-    return Future.value(true);
-  }
 
   void gotoHome() {
     _isTask = false;
@@ -54,8 +51,20 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
     return Navigator(
       onPopPage: (route, result) {
         if (!route.didPop(result)) return false;
-        if (isTask) return true;
-        if (isCreateTask) return true;
+        if (isHome && !isTask && !isCreateTask) {
+          _isHome = false;
+          _isTask = false;
+          _taskId = null;
+        }
+        if (isTask) {
+          _isTask = false;
+          _taskId = null;
+        }
+        if (isCreateTask) {
+          _isTask = false;
+          _taskId = null;
+        }
+        notifyListeners();
         return true;
       },
       transitionDelegate: const TaskTransitionDelegate(),
@@ -75,9 +84,6 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
   NavigationStateDTO? get currentConfiguration {
     return NavigationStateDTO(_isHome, _isTask, _taskId);
   }
-
-  @override
-  final GlobalKey<NavigatorState>? navigatorKey = GlobalKey();
 
   @override
   Future<void> setNewRoutePath(NavigationStateDTO configuration) {

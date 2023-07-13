@@ -6,14 +6,22 @@ import 'package:note/core/api/request/task_request.dart';
 import 'package:note/core/api/response/task_list_response.dart';
 import 'package:note/core/api/response/task_response.dart';
 import 'package:note/domain/entity/task.dart';
+import 'package:note/domain/repository/revision_local_impl.dart';
 import 'package:note/domain/repository/task_remote_impl.dart';
 
-import 'revision_remote.dart';
+class TaskRemote implements TaskRemoteDatasource {
+  final ApiClient _https;
+  final RevisionRemoteDatasource _revision;
+  final DeviceInfoPlugin _device;
 
-class TaskRemoteDatasource implements TaskRemoteDatasourceImpl {
-  final _https = ApiClient();
-  final _revision = RevisionRemoteDatasource();
-  final _device = DeviceInfoPlugin();
+  TaskRemote({
+    required ApiClient https,
+    required RevisionRemoteDatasource revision,
+    required DeviceInfoPlugin device,
+  })  : _device = device,
+        _revision = revision,
+        _https = https;
+
   @override
   Future<TaskListResponse> getAll() async {
     final response = await _https.get(URLs.getAll);

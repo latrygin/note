@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('REMOTE REVISION:', () {
-    late RevisionRemoteDatasourceImpl revisionRemoteDatasource;
+    late RevisionRemoteDatasource revisionRemoteDatasource;
 
     setUpAll(() {
       revisionRemoteDatasource = RevisionRemoteMock();

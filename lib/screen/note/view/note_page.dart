@@ -22,9 +22,9 @@ class NotePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NoteCubit(
-        taskRemoteDatasource: context.read<TaskRemoteDatasourceImpl>(),
-        taskLocalDatasource: context.read<TaskLocalDatasourceImpl>(),
-        revisionLocalDatasource: context.read<RevisionLocalDatasourceImpl>(),
+        taskRemoteDatasource: context.read<TaskRemoteDatasource>(),
+        taskLocalDatasource: context.read<TaskLocalDatasource>(),
+        revisionLocalDatasource: context.read<RevisionLocalDatasource>(),
       )..initial(id),
       child: BlocListener<NoteCubit, NoteState>(
         listener: (context, state) {

@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('LOCAL REVISION:', () {
-    late RevisionLocalDatasourceImpl revisionLocalDatasource;
+    late RevisionLocalDatasource revisionLocalDatasource;
 
     setUpAll(() {
       revisionLocalDatasource = RevisionLocalMock();

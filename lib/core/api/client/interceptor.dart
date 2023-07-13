@@ -5,7 +5,7 @@ import 'package:note/data/remote_datasource/revision_remote.dart';
 import 'token.dart';
 
 class AuthInterceptor extends Interceptor {
-  final _revision = RevisionRemoteDatasource();
+  final _revision = RevisionRemote();
 
   @override
   void onRequest(

@@ -16,13 +16,7 @@ class InputDateWidget extends StatelessWidget {
       initialDate: date ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
-    ).then((value) {
-      if (value != null) {
-        context.read<NoteCubit>().setDate(value);
-      }
-
-      //TODO: change then to await
-    });
+    ).then((value) => context.read<NoteCubit>().setDate(value));
   }
 
   @override

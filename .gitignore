@@ -42,5 +42,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/lib/core/api/client/token.dart
-/lib/core/api/client/url.dart

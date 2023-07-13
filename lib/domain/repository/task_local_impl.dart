@@ -1,6 +1,6 @@
 import 'package:note/domain/entity/task.dart';
 
-abstract class TaskLocalDatasourceImpl {
+abstract class TaskLocalDatasource {
   Future<List<Task>> getAll();
   Future<Task> getAt(String id);
   Future<Task> updateAt(Task task);

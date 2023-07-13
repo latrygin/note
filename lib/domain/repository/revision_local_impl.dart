@@ -1,4 +1,4 @@
-abstract class RevisionRemoteDatasourceImpl {
+abstract class RevisionRemoteDatasource {
   Future<void> set(int revision);
   int get();
 }

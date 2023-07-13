@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('LOCAL TASK', () {
-    late TaskLocalDatasourceImpl taskLocalDatasource;
+    late TaskLocalDatasource taskLocalDatasource;
     var tasks = <Task>[
       Task.create('test1'),
       Task.create('test2'),

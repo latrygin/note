@@ -39,9 +39,6 @@ Note - это простое и интуитивно понятное прило
 Для разработки проекта используются следующие зависимости:
 
 ```yaml
-
-version: 2.0.0+2
-
 environment:
   sdk: '>=3.0.3 <4.0.0'
 
@@ -60,41 +57,58 @@ dependencies:
   shared_preferences: ^2.1.2
   uuid: ^3.0.7
   device_info_plus: ^9.0.2
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.0.15
+  provider: ^6.0.5
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
   build_runner: ^2.4.5
-  hive_generator: ^2.0.0
-
+  isar_generator: ^3.1.0+1
+  test: ^1.24.1
+  bloc_test: ^9.1.3
 ```
 
 
 ## Файловая структура
 
 ```dart
+- core
+  - api                // Dio, интерсепторы, apiClient
+  - exception          // Исключения прилоложения
+  - l10n               // Локализация приложения
+  - navigation         // Навигация 2.0
+
+- data
+  - local_datasource   // Данные из локального хранилища
+  - remote_datasource  // Данные из сервера
+  - mock_datasource    // Моканые данные
+
 - domain
-  - api // Dio, интерсепторы, apiClient
-  - entity
-  - service //Контроллер для работы с сервером
-  - provider //Контроллер для работы с локальным хранилищем
-- screen // Папка экранов
-  - note // Экран
-    - cubit // Модель экрана
-    - view // Главные элементы экрана
-    - widget //Дополнительные элементы экрана
+  - entity             // Сущности проекта
+  - repository         // Интерфейсы для работы с [data]
+  
+- screen               // Папка экранов
+  - note               // Экран
+    - cubit            // Модель экрана
+    - view             // Главные элементы экрана
+    - widget           // Дополнительные элементы экрана
   - notes
     - ...
+
 - utils
-  - exception
-  - l10n
-  - logger
-  - navigation
-  - theme
+  - logger             // Логирование приложения
+  - theme              // Тема приложения
+
+- app.dart             // app файл с мультирепозиторием
+- main.dart            // main запуск приложения с реальными данными
+- main_mock.dart       // main_mock запуск с мокаными данными
 
 ```
 ## Установка и запуск проекта
@@ -118,53 +132,10 @@ cd note
 flutter pub get
 ```
 
-3. Создать два файла:
+3. Подключите свое устройство или эмулятор и выполните следующую команду:
 
 ```bash
-touch lib/domain/api/client/token.dart
-```
-
-token.dart
-
-```dart
-abstract class Token {
-  static const String _token = 'your_token';
-
-  static String get token => _token;
-}
-```
-
-```bash
-touch lib/domain/api/client/url.dart
-```
-
-url.dart
-
-```dart
-abstract class URLs {
-  static const String getAll = 'https://[path]/list';
-  static const String patch = 'https://[path]/list';
-  static const String post = 'https://[path]/list';
-  static String get(String id) {
-    return 'https://[path]/list/$id';
-  }
-
-  static String delete(String id) {
-    return 'https://[path]/list/$id';
-  }
-
-  static String put(String id) {
-    return 'https://[path]/list/$id';
-  }
-}
-
-```
-
-
-4. Подключите свое устройство или эмулятор и выполните следующую команду:
-
-```bash
-flutter run
+flutter run --dart-define=TOKEN=YOUR_TOKEN --dart-define=PATH=YOUR_PATH
 ```
 
 ## Реализация
@@ -176,35 +147,28 @@ flutter run
 [lib/domain/entity/task.dart](https://github.com/latrygin/note/blob/main/lib/domain/entity/task.dart)
 ```dart
 
-@HiveType(typeId: 1)
+@collection
 class Task {
-  @HiveField(0)
+  Id get isarId => fastHash(id);
+
   final String id;
 
-  @HiveField(1)
   final String text;
 
-  @HiveField(2)
+  @enumerated
   final TaskImportant importance;
 
-  @HiveField(3)
   final DateTime? deadline;
 
-  @HiveField(4)
   final bool done;
 
-  @HiveField(5)
   final String? color;
 
-  @HiveField(6)
   final DateTime? createdAt;
 
-  @HiveField(7)
   final DateTime? changedAt;
 
-  @HiveField(8)
   final String? lastUpdatedBy;
-
 
   Task({
     required this.id,
@@ -217,16 +181,13 @@ class Task {
     this.changedAt,
     this.lastUpdatedBy,
   });
-
-
+}
 ```
 
 ### Пример, интерфейса для работы с local storage
 
 ```dart
-import 'package:note/domain/entity/task.dart';
-
-abstract class TaskProviderImpl {
+abstract class TaskLocalDatasource {
   Future<List<Task>> getAll();
   Future<Task> getAt(String id);
   Future<Task> updateAt(Task task);
@@ -240,9 +201,7 @@ abstract class TaskProviderImpl {
 ### Пример, интерфейса для работы с remote storage
 
 ```dart
-import 'package:note/domain/entity/task.dart';
-
-abstract class TaskServiceImpl {
+abstract class TaskRemoteDatasource {
   Future<TaskListResponse> getAll();
   Future<TaskResponse> get(String id);
   Future<TaskResponse> put(Task request);
@@ -267,32 +226,22 @@ Logger logger = Logger(
 );
 ```
 
-Логирование перемещения между экранами:
+Логирование для работы с API:
 
 ```dart
-class NavigationLogger extends NavigatorObserver {
+class ApiClient {
 
-   @override
-    void didPush(
-      Route<dynamic> route,
-      Route<dynamic>? previousRoute,
-    ) {
-      logger.i('$NavigationLogger.didPush: ${route.settings.name}');
+   Future<Response<Map<String, dynamic>>> get(String path) async {
+    try {
+      logger.v('GET: $path');
+      final response = await _https.get<Map<String, dynamic>>(path);
+      logger.v(response.data);
+      return response;
+    } on DioException catch (e) {
+      throw e.error as Exception;
     }
-  
-    @override
-    void didPop(
-      Route<dynamic> route,
-      Route<dynamic>? previousRoute,
-    ) {
-      logger.i('$NavigationLogger.didPop: ${route.settings.name}');
-    }
-    ...
-```
+  }
 
-В API:
-
-```dart
   Future<Response<Map<String, dynamic>>> post(
     String path, {
     Map<String, dynamic>? data,
@@ -312,7 +261,7 @@ class NavigationLogger extends NavigatorObserver {
       throw e.error as Exception;
     }
   }
-
+    ...
 ```
 
 И main.dart
@@ -322,29 +271,243 @@ import 'app.dart';
 
 void main() {
   runZonedGuarded(
-    () async {
+    () {
       WidgetsFlutterBinding.ensureInitialized();
-      await Hive.initFlutter();
       runApp(
         App(
-          taskProvider: TaskProvider(),
-          taskService: TaskService(),
-          localRevisionProvider: LocalRevisionProvider(),
-          revisionProvider: RevisionProvider(),
+          taskLocalDatasource: TaskLocal(),
+          taskRemoteDatasource: TaskRemote(),
+          revisionLocalDatasource: RevisionLocal(),
+          revisionRemoteDatasource: RevisionRemote(),
+          taskRouterDelegate: TaskRouterDelegate(),
         ),
       );
     },
     (error, stackTrace) {
-      log(
-        error.toString(),
-        error: error,
-        stackTrace: stackTrace,
-      );
-      logger.e('main: $error');
+      logger.e('MAIN:', error, stackTrace);
     },
   );
 }
-
-
 ```
+
+## Тестирование
+
+Протестированы все сущности от работы с репозиторием, до работы со стейт менеджером внутри экрана, успешную работу тестов можно увидеть в GitHub Actions
+
+<img width="945" alt="Снимок экрана 2023-07-05 в 15 22 03" src="https://github.com/latrygin/note/assets/114460271/5f6afb56-8355-44f9-b474-9628859612bc">
+
+В GitHub Actions так же проходит тест интеграционный с проходом по задачи, создать заметки, сохранить, выйти и найти по тексту с мокаными данными
+
+## DI
+
+DI релирован с помощью пакета flutter_bloc и определяет сущности на старте проекта:
+
+```dart
+class App extends StatelessWidget {
+  final TaskLocalDatasource _taskLocalDatasource;
+  final TaskRemoteDatasource _taskRemoteDatasource;
+  final RevisionLocalDatasource _revisionLocalDatasource;
+  final RevisionRemoteDatasource _revisionRemoteDatasource;
+  final TaskRouterDelegate _taskRouterDelegate;
+
+  const App({
+    super.key,
+    required TaskLocalDatasource taskLocalDatasource,
+    required TaskRemoteDatasource taskRemoteDatasource,
+    required RevisionLocalDatasource revisionLocalDatasource,
+    required RevisionRemoteDatasource revisionRemoteDatasource,
+    required TaskRouterDelegate taskRouterDelegate,
+  })  : _taskLocalDatasource = taskLocalDatasource,
+        _taskRemoteDatasource = taskRemoteDatasource,
+        _revisionLocalDatasource = revisionLocalDatasource,
+        _revisionRemoteDatasource = revisionRemoteDatasource,
+        _taskRouterDelegate = taskRouterDelegate;
+
+  static const String _title = 'Note';
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        ///Local storage for Task
+        RepositoryProvider<TaskLocalDatasource>.value(
+          value: _taskLocalDatasource,
+        ),
+
+        ///Remote storage for Task
+        RepositoryProvider<TaskRemoteDatasource>.value(
+          value: _taskRemoteDatasource,
+        ),
+
+        ///Remote storage for Local Revision
+        RepositoryProvider<RevisionLocalDatasource>.value(
+          value: _revisionLocalDatasource,
+        ),
+
+        ///Remote storage for Revision
+        RepositoryProvider<RevisionRemoteDatasource>.value(
+          value: _revisionRemoteDatasource,
+        ),
+
+        ChangeNotifierProvider<TaskRouterDelegate>.value(
+          value: _taskRouterDelegate,
+        ),
+
+        Provider<RouteObserver>.value(
+          value: RouteObserver(),
+        ),
+      ],
+      child: Builder(
+        builder: (context) {
+          return MaterialApp.router(
+            key: const ValueKey('Material'),
+            title: _title,
+
+            ///localizations
+            localizationsDelegates: S.localizationsDelegates,
+            supportedLocales: S.supportedLocales,
+
+            ///theme
+            theme: FlutterTheme.light,
+            //darkTheme: FlutterTheme.dark,
+
+            ///Navigation
+            routerDelegate: context.read<TaskRouterDelegate>(),
+            routeInformationParser: TaskRouteInformationParser(),
+            routeInformationProvider: DebugRouteInformationProvider(),
+
+            ///Other
+            debugShowCheckedModeBanner: false,
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+А используется через контекст в экранах:
+
+```dart
+class NotesPage extends StatelessWidget {
+  const NotesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => NotesCubit(
+        taskLocalDatasource: context.read<TaskLocalDatasource>(),
+        taskRemoteDatasource: context.read<TaskRemoteDatasource>(),
+        revisionLocalDatasource: context.read<RevisionLocalDatasource>(),
+      )..initial(),
+      child: const NotesBody(),
+    );
+  }
+}
+```
+
+## Обработка ошибок сервера
+
+В стейт менеджере при нициализации работает try cache, которые ловят все возсожные ошибки:
+
+```dart
+
+Future<void> initial(){
+
+  try {
+
+  ...
+  // Any code
+  ...
+
+  } on NotInternetException catch (_) {
+
+      logger.i('DO TASK: Нет интернета');
+      await _revisionLocalDatasource.set(true);
+      emit(
+        NotesSuccessState(
+          tasks: state.tasks,
+          filter: state.filter,
+        ),
+      );
+
+    } on Exception catch (error, stackTrace) {
+
+      /// Передача стейта с ошибкой
+
+      logger.e('DONE TASK:', error, stackTrace);
+      emit(
+        NotesFailureState(
+          error: error,
+          tasks: state.tasks,
+          filter: state.filter,
+        ),
+      );
+
+    } finally {
+      emit(
+        NotesSuccessState(
+          tasks: state.tasks,
+          filter: state.filter,
+        ),
+      );
+    }
+}
+```
+
+Вывод ошибки происходит в Widget BlocListener, который запускает AlertDialog:
+
+```dart
+class NotePage extends StatelessWidget {
+  final String? id;
+  const NotePage({
+    super.key,
+    this.id,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => NoteCubit(
+        taskRemoteDatasource: context.read<TaskRemoteDatasource>(),
+        taskLocalDatasource: context.read<TaskLocalDatasource>(),
+        revisionLocalDatasource: context.read<RevisionLocalDatasource>(),
+      )..initial(id),
+      child: BlocListener<NoteCubit, NoteState>(
+        listener: (context, state) {
+          if (state is NoteFailureState) {
+            late String message;
+            switch (state.error) {
+              case BadRequestException():
+                message = S.of(context).get(SName.badRequest);
+              case UnauthorizedException():
+                message = S.of(context).get(SName.unauthorized);
+              case NotFoundException():
+                message = S.of(context).get(SName.notFound);
+              case ServerErrorException():
+                message = S.of(context).get(SName.serverError);
+              case NotInternetException():
+                message = S.of(context).get(SName.notInternet);
+              case UnknownException():
+                message = S.of(context).get(SName.unknownException);
+              default:
+                message = S.of(context).get(SName.veryUnknownException);
+            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(message)),
+            );
+          }
+        },
+        child: const Scaffold(
+          appBar: NoteHeader(),
+          body: NoteBody(),
+        ),
+      ),
+    );
+  }
+}
+```
+
+
+
 

@@ -1,6 +1,6 @@
 import 'package:note/domain/repository/revision_remote_impl.dart';
 
-class RevisionLocalMock implements RevisionLocalDatasourceImpl {
+class RevisionLocalMock implements RevisionLocalDatasource {
   bool _revision = true;
 
   @override
