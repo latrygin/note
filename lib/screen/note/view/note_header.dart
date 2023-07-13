@@ -14,11 +14,7 @@ class NoteHeader extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 4,
       leading: IconButton(
         key: const ValueKey('BackButton'),
-        onPressed: () {
-          context.read<TaskRouterDelegate>().gotoHome();
-
-          ///TODO(pop task)
-        },
+        onPressed: () => context.read<TaskRouterDelegate>().gotoHome(),
         icon: const Icon(Icons.close),
       ),
       actions: [

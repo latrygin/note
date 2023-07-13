@@ -67,11 +67,7 @@ class _NotesBodyState extends State<NotesBody> with RouteAware {
         ),
         floatingActionButton: FloatingActionButton(
           key: const ValueKey('Floating'),
-          onPressed: () {
-            context.read<TaskRouterDelegate>().gotoCreateTask();
-
-            ///TODO(open task for create)
-          },
+          onPressed: () => context.read<TaskRouterDelegate>().gotoCreateTask(),
           child: const Icon(Icons.add),
         ),
       ),
