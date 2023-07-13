@@ -25,7 +25,7 @@ class TaskRemote implements TaskRemoteDatasource {
   @override
   Future<TaskListResponse> getAll() async {
     final response = await _https.get(URLs.getAll);
-    final taskListResponse = TaskListResponse.fromMap(
+    final taskListResponse = TaskListResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
     await _revision.set(taskListResponse.revision);
@@ -35,7 +35,7 @@ class TaskRemote implements TaskRemoteDatasource {
   @override
   Future<TaskResponse> delete(String id) async {
     final response = await _https.delete(URLs.delete(id));
-    final taskResponse = TaskResponse.fromMap(
+    final taskResponse = TaskResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
     await _revision.set(taskResponse.revision);
@@ -45,7 +45,7 @@ class TaskRemote implements TaskRemoteDatasource {
   @override
   Future<TaskResponse> get(String id) async {
     final response = await _https.get(URLs.get(id));
-    final taskResponse = TaskResponse.fromMap(
+    final taskResponse = TaskResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
     await _revision.set(taskResponse.revision);
@@ -56,9 +56,9 @@ class TaskRemote implements TaskRemoteDatasource {
   Future<TaskListResponse> patch(TaskListRequest request) async {
     final response = await _https.patch(
       URLs.patch,
-      data: request.toMap(),
+      data: request.toJson(),
     );
-    final taskListResponse = TaskListResponse.fromMap(
+    final taskListResponse = TaskListResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
     await _revision.set(taskListResponse.revision);
@@ -71,9 +71,9 @@ class TaskRemote implements TaskRemoteDatasource {
     final task = request.copyWith(lastUpdatedBy: deviceInfo.id);
     final response = await _https.post(
       URLs.post,
-      data: TaskRequest(task).toMap(),
+      data: TaskRequest(element: task).toJson(),
     );
-    final taskResponse = TaskResponse.fromMap(
+    final taskResponse = TaskResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
     await _revision.set(taskResponse.revision);
@@ -89,9 +89,9 @@ class TaskRemote implements TaskRemoteDatasource {
     );
     final response = await _https.put(
       URLs.put(request.id),
-      data: TaskRequest(task).toMap(),
+      data: TaskRequest(element: task).toJson(),
     );
-    final taskResponse = TaskResponse.fromMap(
+    final taskResponse = TaskResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
     await _revision.set(taskResponse.revision);
