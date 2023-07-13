@@ -203,6 +203,7 @@ class FlutterTheme {
         ),
       ),
       cardTheme: CardTheme(
+        color: backSecondaryDark,
         margin: EdgeInsets.zero,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -217,6 +218,9 @@ class FlutterTheme {
         accentColor: Colors.deepPurple,
       ),
       textTheme: const TextTheme(
+        bodyMedium: TextStyle(
+          color: Colors.white,
+        ),
         labelLarge: TextStyle(
           color: labelPrimaryDark,
           fontWeight: FontWeight.w500,
