@@ -3,59 +3,32 @@ name: main
 on: [push, workflow_dispatch]
 
 jobs:
-  analyze:
-    name: Run analyzer and formatter
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.10.5'
-          cache: true
-      - run: flutter pub get
-      - run: flutter analyze
-      - run: dart format --set-exit-if-changed lib/
-
-  test:
-    name: Run unit tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.10.5'
-          cache: true
-      - run: flutter pub get
-      - run: flutter test
-        id: test
-      - if: ${{ failure() && steps.test.conclusion == 'failure' }}
-        name: 'Upload test failures'
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-failures
-          path: test/failures
-          retention-days: 5
-
-  build:
-    needs: [ analyze, test ]
-    name: Build android on Mac OS
+  android:
     runs-on: macos-11
-    timeout-minutes: 10
+    strategy:
+      matrix:
+        api-level:
+          - 29
+      fail-fast: true
     steps:
       - uses: actions/checkout@v3
+
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
+
       - name: Set up JDK 11
-        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.10.5
+        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.11.0
         with:
           java-version: 11
           distribution: temurin
+
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
 
       - name: Set up google-services.json file
         env:
@@ -63,14 +36,81 @@ jobs:
         run: |
           echo $SERVICES > ./android/app/google-services.json
 
-      - name: Build apk for android
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
-          PATH_API: ${{ secrets.PATH_API }}
-          API_KEY: ${{ secrets.API_KEY }}
-          APP_ID: ${{ secrets.APP_ID }}
-          MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: |
-          flutter build apk --dart-define=TOKEN=$TOKEN --dart-define=PATH_API=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
+      - name: Run integration tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          profile: Nexus 6
+          script: flutter test integration_test --verbose
+#  analyze:
+#    name: Run analyzer and formatter
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.10.5'
+#          cache: true
+#      - run: flutter pub get
+#      - run: flutter analyze
+#      - run: dart format --set-exit-if-changed lib/
+#
+#  test:
+#    name: Run unit tests
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.10.5'
+#          cache: true
+#      - run: flutter pub get
+#      - run: flutter test
+#        id: test
+#      - if: ${{ failure() && steps.test.conclusion == 'failure' }}
+#        name: 'Upload test failures'
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: test-failures
+#          path: test/failures
+#          retention-days: 5
+#
+#  build:
+#    needs: [ analyze, test ]
+#    name: Build android on Mac OS
+#    runs-on: macos-11
+#    timeout-minutes: 10
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Setup Flutter SDK
+#        uses: subosito/flutter-action@v2
+#        with:
+#          channel: stable
+#
+#      - name: Set up JDK 11
+#        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.10.5
+#        with:
+#          java-version: 11
+#          distribution: temurin
+#
+#      - name: Set up google-services.json file
+#        env:
+#          SERVICES: ${{ secrets.SERVICES }}
+#        run: |
+#          echo $SERVICES > ./android/app/google-services.json
+#
+#      - name: Build apk for android
+#        env:
+#          TOKEN: ${{ secrets.TOKEN }}
+#          PATH_API: ${{ secrets.PATH_API }}
+#          API_KEY: ${{ secrets.API_KEY }}
+#          APP_ID: ${{ secrets.APP_ID }}
+#          MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
+#          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+#          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+#        run: |
+#          flutter build apk --dart-define=TOKEN=$TOKEN --dart-define=PATH_API=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
