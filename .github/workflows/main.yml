@@ -39,10 +39,10 @@ jobs:
           retention-days: 5
 
   build:
-#    needs: [ analyze, test ]
+    needs: [ analyze, test ]
     name: Build android on macos-11
     runs-on: macos-11
-#    timeout-minutes: 10
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
 
@@ -56,8 +56,7 @@ jobs:
         with:
           java-version: 11
           distribution: temurin
-#      - name: Create google-services.json file
-#        run: cat ./android/app/google-services.json | base64
+
       - name: Set up google-services.json file
         env:
           SERVICES: ${{ secrets.SERVICES }}
@@ -73,7 +72,8 @@ jobs:
           MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: flutter build apk --dart-define=TOKEN=$TOKEN --dart-define=PATH=$PATH --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
+        run: |
+          flutter build apk --dart-define=TOKEN=$TOKEN --dart-define=PATH=$PATH --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
 
 #  integration-test:
 #    runs-on: macos-11
