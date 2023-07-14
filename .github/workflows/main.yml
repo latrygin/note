@@ -66,14 +66,14 @@ jobs:
       - name: Build apk for android
         env:
           TOKEN: ${{ secrets.TOKEN }}
-          PATH: ${{ secrets.PATH }}
+          PATH_API: ${{ secrets.PATH_API }}
           API_KEY: ${{ secrets.API_KEY }}
           APP_ID: ${{ secrets.APP_ID }}
           MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
         run: |
-          flutter build apk --dart-define=TOKEN=$TOKEN --dart-define=PATH=$PATH --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
+          flutter build apk --dart-define=TOKEN=$TOKEN --dart-define=PATH=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
 
 #  integration-test:
 #    runs-on: macos-11
