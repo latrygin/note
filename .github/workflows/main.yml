@@ -40,7 +40,7 @@ jobs:
 
   build:
     needs: [ analyze, test ]
-    name: Build android on macos
+    name: Build android on ubuntu
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -57,7 +57,8 @@ jobs:
 #      - name: Create google-services.json file
 #        run: cat ./android/app/google-services.json | base64
       - name: Set up google-services.json file
-        run: echo ${{ secrets.SERVICES }} > ./android/app/google-services.json
+        run: |
+          echo ${{ secrets.SERVICES }} > ./android/app/google-services.json
       - name: Build apk for android
         run: flutter build apk --dart-define=TOKEN=${{ secrets.TOKEN }} --dart-define=PATH=${{ secrets.PATH }} --dart-define=API_KEY=${{ secrets.API_KEY }} --dart-define=APP_ID=${{ secrets.APP_ID }} --dart-define=MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} --dart-define=PROJECT_ID=${{ secrets.PROJECT_ID }} --dart-define=STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }}
 
