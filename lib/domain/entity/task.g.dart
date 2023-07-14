@@ -1494,3 +1494,45 @@ extension TaskQueryProperty on QueryBuilder<Task, Task, QQueryProperty> {
     });
   }
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Task _$TaskFromJson(Map<String, dynamic> json) => Task(
+      id: json['id'] as String,
+      text: json['text'] as String,
+      importance:
+          $enumDecodeNullable(_$TaskImportantEnumMap, json['importance']) ??
+              TaskImportant.basic,
+      deadline: json['deadline'] == null
+          ? null
+          : DateTime.parse(json['deadline'] as String),
+      done: json['done'] as bool? ?? false,
+      color: json['color'] as String?,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      changedAt: json['changedAt'] == null
+          ? null
+          : DateTime.parse(json['changedAt'] as String),
+      lastUpdatedBy: json['lastUpdatedBy'] as String?,
+    );
+
+Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
+      'id': instance.id,
+      'text': instance.text,
+      'importance': _$TaskImportantEnumMap[instance.importance]!,
+      'deadline': instance.deadline?.toIso8601String(),
+      'done': instance.done,
+      'color': instance.color,
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'changedAt': instance.changedAt?.toIso8601String(),
+      'lastUpdatedBy': instance.lastUpdatedBy,
+    };
+
+const _$TaskImportantEnumMap = {
+  TaskImportant.basic: 'basic',
+  TaskImportant.low: 'low',
+  TaskImportant.important: 'important',
+};

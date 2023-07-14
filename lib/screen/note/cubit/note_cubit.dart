@@ -200,7 +200,6 @@ class NoteCubit extends Cubit<NoteState> {
       );
     } finally {
       // NavigationManager.instance.popToHome();
-      ///TODO(pop task)
     }
   }
 

@@ -1,36 +1,17 @@
-import 'dart:convert';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:note/domain/entity/task.dart';
 
-class TaskResponse {
-  final String status;
-  final int revision;
-  final Task element;
+part 'task_response.freezed.dart';
+part 'task_response.g.dart';
 
-  TaskResponse({
-    required this.status,
-    required this.revision,
-    required this.element,
-  });
+@freezed
+sealed class TaskResponse with _$TaskResponse {
+  const factory TaskResponse({
+    required String status,
+    required int revision,
+    required Task element,
+  }) = _TaskResponse;
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'status': status,
-      'revision': revision,
-      'element': element.toMap(),
-    };
-  }
-
-  factory TaskResponse.fromMap(Map<String, dynamic> map) {
-    return TaskResponse(
-      status: map['status'] as String,
-      revision: map['revision'] as int,
-      element: Task.fromMap(map['element'] as Map<String, dynamic>),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory TaskResponse.fromJson(String source) =>
-      TaskResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory TaskResponse.fromJson(Map<String, dynamic> json) =>
+      _$TaskResponseFromJson(json);
 }

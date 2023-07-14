@@ -48,10 +48,7 @@ class NoteWidget extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 6.0),
-        onTap: () {
-          ///TODO(open task for edit)
-          context.read<TaskRouterDelegate>().gotoTask(task.id);
-        },
+        onTap: () => context.read<TaskRouterDelegate>().gotoTask(task.id),
         leading: Checkbox.adaptive(
           fillColor: MaterialStateProperty.resolveWith(
             task.done
@@ -102,11 +99,7 @@ class NoteWidget extends StatelessWidget {
                 style: const TextStyle(color: Colors.deepPurple),
               ),
         trailing: IconButton(
-          onPressed: () {
-            context.read<TaskRouterDelegate>().gotoTask(task.id);
-
-            ///TODO(open task for edit)
-          },
+          onPressed: () => context.read<TaskRouterDelegate>().gotoTask(task.id),
           icon: const Icon(
             Icons.info_outline,
             color: FlutterTheme.labelTertiaryLight,
