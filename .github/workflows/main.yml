@@ -40,8 +40,8 @@ jobs:
 
   build:
 #    needs: [ analyze, test ]
-    name: Build android on ubuntu
-    runs-on: ubuntu-latest
+    name: Build android on macos-11
+    runs-on: macos-11
 #    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
