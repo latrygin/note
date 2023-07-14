@@ -38,7 +38,7 @@ jobs:
           path: test/failures
           retention-days: 5
 
-  android:
+  integration-test:
     runs-on: macos-11
     strategy:
       matrix:
@@ -64,7 +64,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           profile: Nexus 6
-          script: flutter test integration_test --verbose
+          script: flutter test integration_test
 
 #  integration-test:
 #    needs: [ analyze, test ]
@@ -93,7 +93,7 @@ jobs:
 #          script: flutter test integration_test
 
   build:
-    needs: [ analyze, test ]
+    needs: [ analyze, test, integration-test ]
     name: Build android on macos-11
     runs-on: macos-11
     timeout-minutes: 10
