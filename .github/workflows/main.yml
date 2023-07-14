@@ -93,7 +93,7 @@ jobs:
 #          script: flutter test integration_test
 
   build:
-    needs: [ analyze, test, integration-test]
+    needs: [ analyze, test ]
     name: Build android on macos-11
     runs-on: macos-11
     timeout-minutes: 10
