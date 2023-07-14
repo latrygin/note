@@ -38,6 +38,7 @@ jobs:
           path: test/failures
           retention-days: 5
   integration-test:
+    needs: [ analyze, test ]
     name: Run integration test
     runs-on: macos-11
     timeout-minutes: 25
