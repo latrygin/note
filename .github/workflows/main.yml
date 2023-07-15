@@ -60,6 +60,8 @@ jobs:
           distribution: temurin
       - name: Install Flutter dependencies
         run: flutter pub get
+      - name: Create google-services.json file
+        run: touch ./android/app/google-services.json
       - name: Set up google-services.json file
         env:
           SERVICES: ${{ secrets.SERVICES }}
