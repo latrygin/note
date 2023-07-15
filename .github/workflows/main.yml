@@ -89,6 +89,8 @@ jobs:
         with:
           java-version: 11
           distribution: temurin
+      - name: Create google-services.json file
+        run: touch ./android/app/google-services.json
       - name: Set up google-services.json file
         env:
           SERVICES: ${{ secrets.SERVICES }}
