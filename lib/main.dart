@@ -20,6 +20,7 @@ Future<void> main() async {
 
   /// Инициализация Firebase
   await Firebase.initializeApp(
+    name: 'main',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FlutterError.onError = (errorDetails) {

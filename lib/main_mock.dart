@@ -18,6 +18,7 @@ Future<void> main() async {
 
   /// Инициализация Firebase
   await Firebase.initializeApp(
+    name: 'main_mock',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FlutterError.onError = (errorDetails) {
