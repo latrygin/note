@@ -7,7 +7,6 @@ import 'package:note/core/navigation/delegate.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
 import 'package:note/screen/notes/notes.dart';
-import 'package:note/utils/theme/theme.dart';
 
 class NoteWidget extends StatelessWidget {
   final int index;
@@ -19,8 +18,8 @@ class NoteWidget extends StatelessWidget {
   });
 
   Color purple(Set<MaterialState> states) => Colors.deepPurple;
-  Color red(Set<MaterialState> states) => FlutterTheme.colorRedLight;
-  Color gray(Set<MaterialState> states) => FlutterTheme.supportSeparatorLight;
+  Color red(Set<MaterialState> states) => Colors.red;
+  Color gray(Set<MaterialState> states) => Colors.grey;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +69,7 @@ class NoteWidget extends StatelessWidget {
                   child: Icon(
                     Icons.arrow_downward,
                     size: 16,
+                    color: Colors.grey,
                   ),
                 ),
               if (task.importance == TaskImportant.important && !task.done)
@@ -82,12 +82,12 @@ class NoteWidget extends StatelessWidget {
                 ),
               TextSpan(
                 text: task.text,
-                style: TextStyle(
-                  color: task.done ? Colors.grey : Colors.black,
-                  decoration: task.done
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                ),
+                style: Theme.of(context).listTileTheme.titleTextStyle!.copyWith(
+                      decoration: task.done
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                      color: task.done ? Colors.grey : null,
+                    ),
               ),
             ],
           ),
@@ -96,13 +96,13 @@ class NoteWidget extends StatelessWidget {
             ? null
             : Text(
                 DateFormat.yMMMMd(Platform.localeName).format(task.deadline!),
-                style: const TextStyle(color: Colors.deepPurple),
+                style: Theme.of(context).listTileTheme.subtitleTextStyle,
               ),
         trailing: IconButton(
           onPressed: () => context.read<TaskRouterDelegate>().gotoTask(task.id),
           icon: const Icon(
             Icons.info_outline,
-            color: FlutterTheme.labelTertiaryLight,
+            color: Colors.grey,
           ),
         ),
       ),

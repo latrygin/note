@@ -45,7 +45,7 @@ class NotesHeader extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).get(SName.myTask),
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: Theme.of(context).appBarTheme.titleTextStyle,
                   ),
                   BlocBuilder<NotesCubit, NotesState>(
                     builder: (context, state) {
@@ -61,7 +61,9 @@ class NotesHeader extends StatelessWidget {
                                           getCountDone(state.tasks),
                                         )
                                     : S.of(context).get(SName.loading),
-                                style: Theme.of(context).textTheme.labelSmall,
+                                style: Theme.of(context)
+                                    .appBarTheme
+                                    .toolbarTextStyle,
                               ),
                               if (state is NotesSuccessState)
                                 const SizedBox()
