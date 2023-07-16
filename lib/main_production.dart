@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:note/core/di/di.dart';
 import 'package:note/core/di/options.dart';
 import 'package:note/utils/logger/logger.dart';
-
 import 'app.dart';
 
 Future<void> main() async {
