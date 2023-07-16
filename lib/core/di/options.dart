@@ -1,1 +1,4 @@
-enum DIOptions { production, developer, }
+enum DIOptions {
+  production,
+  developer,
+}

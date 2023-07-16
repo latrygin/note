@@ -31,14 +31,18 @@ class NotesCubit extends Cubit<NotesState> {
       final localTasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
-      emit(NotesTemporaryState(localTasks),);
+      emit(
+        NotesTemporaryState(localTasks),
+      );
 
       if (_revisionLocalDatasource.get()) {
         logger.i('Новые задачи, о которых не знает сервер');
         final taskListRequest = await _taskRemoteDatasource.patch(
           TaskListRequest(list: localTasks),
         );
-        emit(NotesSuccessState(taskListRequest.list),);
+        emit(
+          NotesSuccessState(taskListRequest.list),
+        );
         await _revisionLocalDatasource.set(false);
         return;
       } else {
@@ -124,9 +128,11 @@ class NotesCubit extends Cubit<NotesState> {
       emit(NotesSuccessState(state.tasks));
     } on Exception catch (error, stackTrace) {
       logger.e('DELETE TASK:', error, stackTrace);
-      emit(NotesFailureState(error,state.tasks));
+      emit(NotesFailureState(error, state.tasks));
     } finally {
-      emit(NotesSuccessState(state.tasks),);
+      emit(
+        NotesSuccessState(state.tasks),
+      );
     }
   }
 

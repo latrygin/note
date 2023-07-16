@@ -6,6 +6,7 @@ import 'app.dart';
 
 Future<void> main() async {
   logger.i('Start main_development');
+
   /// Инициализация Binding
   WidgetsFlutterBinding.ensureInitialized();
 

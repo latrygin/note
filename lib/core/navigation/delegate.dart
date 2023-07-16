@@ -7,7 +7,8 @@ import 'navigation.dart';
 import 'state.dart';
 
 class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<NavigationStateDTO> implements Nav{
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<NavigationStateDTO>
+    implements Nav {
   bool _isHome;
 
   bool _isTask;
@@ -72,9 +73,7 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
       },
       transitionDelegate: const TaskTransitionDelegate(),
       key: navigatorKey,
-      observers: [
-        GetIt.I<RouteObserver>()
-      ],
+      observers: [GetIt.I<RouteObserver>()],
       pages: [
         if (isHome) const MaterialPage(child: NotesPage()),
         if (isCreateTask) const MaterialPage(child: NotePage()),

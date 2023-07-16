@@ -88,9 +88,7 @@ class NotesHeader extends StatelessWidget {
                           InkWell(
                             onTap: onPressed,
                             child: Icon(
-                              filter
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              filter ? Icons.visibility_off : Icons.visibility,
                               color: Colors.deepPurple,
                               size: 20,
                             ),

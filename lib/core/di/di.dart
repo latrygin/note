@@ -26,26 +26,30 @@ import 'package:note/firebase_options.dart';
 
 import 'options.dart';
 
-class DI{
-
-  static Future<void> setUpDI(DIOptions options) async{
+class DI {
+  static Future<void> setUpDI(DIOptions options) async {
     final di = GetIt.instance;
-    switch(options){
+    switch (options) {
       case DIOptions.developer:
 
         /// Router delegate
         di.registerSingleton<Nav>(TaskRouterDelegate());
-        di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(TaskRouteInformationParser());
-        di.registerSingleton<PlatformRouteInformationProvider>(DebugRouteInformationProvider());
+        di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(
+            TaskRouteInformationParser());
+        di.registerSingleton<PlatformRouteInformationProvider>(
+            DebugRouteInformationProvider());
         di.registerSingleton<RouteObserver>(RouteObserver());
 
         /// Repository
         di.registerLazySingleton<TaskLocalDatasource>(TaskLocalMock.new);
         di.registerLazySingleton<TaskRemoteDatasource>(TaskRemoteMock.new);
-        di.registerLazySingleton<RevisionLocalDatasource>(RevisionLocalMock.new);
-        di.registerLazySingleton<RevisionRemoteDatasource>(RevisionRemoteMock.new);
+        di.registerLazySingleton<RevisionLocalDatasource>(
+            RevisionLocalMock.new);
+        di.registerLazySingleton<RevisionRemoteDatasource>(
+            RevisionRemoteMock.new);
         break;
       case DIOptions.production:
+
         ///Firebase
         await Firebase.initializeApp(
           name: 'production',
@@ -67,19 +71,25 @@ class DI{
 
         /// Router delegate
         di.registerSingleton<Nav>(TaskRouterDelegate());
-        di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(TaskRouteInformationParser());
-        di.registerSingleton<PlatformRouteInformationProvider>(DebugRouteInformationProvider());
+        di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(
+            TaskRouteInformationParser());
+        di.registerSingleton<PlatformRouteInformationProvider>(
+            DebugRouteInformationProvider());
         di.registerSingleton<RouteObserver>(RouteObserver());
 
         /// Repository
-        di.registerLazySingleton<TaskLocalDatasource>(()=>TaskLocal(
-          device: DeviceInfoPlugin(),
-        ),);
-        di.registerLazySingleton<TaskRemoteDatasource>(()=>TaskRemote(
-          https: ApiClient(),
-          revision: RevisionRemote(),
-          device: DeviceInfoPlugin(),
-        ),);
+        di.registerLazySingleton<TaskLocalDatasource>(
+          () => TaskLocal(
+            device: DeviceInfoPlugin(),
+          ),
+        );
+        di.registerLazySingleton<TaskRemoteDatasource>(
+          () => TaskRemote(
+            https: ApiClient(),
+            revision: RevisionRemote(),
+            device: DeviceInfoPlugin(),
+          ),
+        );
         di.registerLazySingleton<RevisionLocalDatasource>(RevisionLocal.new);
         di.registerLazySingleton<RevisionRemoteDatasource>(RevisionRemote.new);
         break;

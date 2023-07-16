@@ -6,7 +6,6 @@ import 'package:note/core/navigation/navigation.dart';
 import 'package:note/core/navigation/state.dart';
 import 'package:note/utils/theme/theme.dart';
 
-
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -28,7 +27,8 @@ class App extends StatelessWidget {
 
       ///Navigation
       routerDelegate: GetIt.I<Nav>() as TaskRouterDelegate,
-      routeInformationParser: GetIt.I<RouteInformationParser<NavigationStateDTO>>(),
+      routeInformationParser:
+          GetIt.I<RouteInformationParser<NavigationStateDTO>>(),
       routeInformationProvider: GetIt.I<PlatformRouteInformationProvider>(),
 
       ///Other

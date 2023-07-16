@@ -15,7 +15,6 @@ final class NotesInitialState extends NotesState {
 }
 
 final class NotesProgressState extends NotesState {
-
   @override
   final List<Task>? tasks;
 
@@ -26,7 +25,6 @@ final class NotesProgressState extends NotesState {
 }
 
 final class NotesSuccessState extends NotesState {
-
   @override
   final List<Task>? tasks;
 
@@ -37,7 +35,6 @@ final class NotesSuccessState extends NotesState {
 }
 
 final class NotesTemporaryState extends NotesState {
-
   @override
   final List<Task>? tasks;
 
