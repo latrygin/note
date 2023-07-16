@@ -35,18 +35,22 @@ class DI {
         /// Router delegate
         di.registerSingleton<Nav>(TaskRouterDelegate());
         di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(
-            TaskRouteInformationParser());
+          TaskRouteInformationParser(),
+        );
         di.registerSingleton<PlatformRouteInformationProvider>(
-            DebugRouteInformationProvider());
+          DebugRouteInformationProvider(),
+        );
         di.registerSingleton<RouteObserver>(RouteObserver());
 
         /// Repository
         di.registerLazySingleton<TaskLocalDatasource>(TaskLocalMock.new);
         di.registerLazySingleton<TaskRemoteDatasource>(TaskRemoteMock.new);
         di.registerLazySingleton<RevisionLocalDatasource>(
-            RevisionLocalMock.new);
+          RevisionLocalMock.new,
+        );
         di.registerLazySingleton<RevisionRemoteDatasource>(
-            RevisionRemoteMock.new);
+          RevisionRemoteMock.new,
+        );
         break;
       case DIOptions.production:
 
@@ -72,9 +76,11 @@ class DI {
         /// Router delegate
         di.registerSingleton<Nav>(TaskRouterDelegate());
         di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(
-            TaskRouteInformationParser());
+          TaskRouteInformationParser(),
+        );
         di.registerSingleton<PlatformRouteInformationProvider>(
-            DebugRouteInformationProvider());
+          DebugRouteInformationProvider(),
+        );
         di.registerSingleton<RouteObserver>(RouteObserver());
 
         /// Repository
