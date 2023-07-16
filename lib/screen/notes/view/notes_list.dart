@@ -4,7 +4,12 @@ import 'package:note/screen/notes/cubit/notes_state.dart';
 import 'package:note/screen/notes/notes.dart';
 
 class NotesList extends StatelessWidget {
-  const NotesList({super.key});
+  final bool filter;
+
+  const NotesList({
+    super.key,
+    required this.filter,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,30 +31,35 @@ class NotesList extends StatelessWidget {
                 }
                 return Column(
                   children: [
-                    ListView.builder(
-                      reverse: true,
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.tasks!.length,
-                      itemBuilder: (context, index) {
-                        final data = state.tasks![index];
-                        if (state.filter) {
-                          if (!data.done) {
+                    AnimatedSize(
+                      alignment: Alignment.topCenter,
+                      duration: const Duration(milliseconds: 500),
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: state.tasks!.length,
+                        itemBuilder: (context, index) {
+                          final data = state.tasks![index];
+                          if (filter) {
+                            if (!data.done) {
+                              return NoteWidget(
+                                key: ValueKey<String>(data.id),
+                                index: index,
+                                task: data,
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          } else {
                             return NoteWidget(
+                              key: ValueKey<String>(data.id),
                               index: index,
                               task: data,
                             );
-                          } else {
-                            return const SizedBox();
                           }
-                        } else {
-                          return NoteWidget(
-                            index: index,
-                            task: data,
-                          );
-                        }
-                      },
+                        },
+                      ),
                     ),
                     const InputWidget()
                   ],

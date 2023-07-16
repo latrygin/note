@@ -25,35 +25,20 @@ class NotesCubit extends Cubit<NotesState> {
   Future<void> initial() async {
     try {
       ///Start Progress State
-      emit(
-        NotesProgressState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesProgressState(state.tasks));
 
       ///Get all tasks from local storage
       final localTasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
-      emit(
-        NotesTemporaryState(
-          tasks: localTasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesTemporaryState(localTasks),);
 
       if (_revisionLocalDatasource.get()) {
         logger.i('Новые задачи, о которых не знает сервер');
         final taskListRequest = await _taskRemoteDatasource.patch(
           TaskListRequest(list: localTasks),
         );
-        emit(
-          NotesSuccessState(
-            tasks: taskListRequest.list,
-            filter: state.filter,
-          ),
-        );
+        emit(NotesSuccessState(taskListRequest.list),);
         await _revisionLocalDatasource.set(false);
         return;
       } else {
@@ -63,51 +48,25 @@ class NotesCubit extends Cubit<NotesState> {
         await _taskLocalDatasource.patch(remoteTasks.list);
 
         ///Start Success State
-        emit(
-          NotesSuccessState(
-            tasks: remoteTasks.list,
-            filter: state.filter,
-          ),
-        );
+        emit(NotesSuccessState(remoteTasks.list));
         return;
       }
     } on NotInternetException catch (_) {
       logger.i('Нет интернета');
       await _revisionLocalDatasource.set(true);
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     } on Exception catch (error, stackTrace) {
       logger.e('INITIAL TASK:', error, stackTrace);
-      emit(
-        NotesFailureState(
-          error: error,
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesFailureState(error, state.tasks));
     } finally {
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     }
   }
 
   Future<void> doneTask(int index, bool done) async {
     try {
       ///Start Loading State
-      emit(
-        NotesProgressState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesProgressState(state.tasks));
 
       final task = state.tasks![index].copyWith(
         done: done,
@@ -120,60 +79,29 @@ class NotesCubit extends Cubit<NotesState> {
       final tasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
-      emit(
-        NotesTemporaryState(
-          tasks: tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesTemporaryState(tasks));
 
       ///Change task
       await _taskRemoteDatasource.put(task);
 
       ///Start Success State
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     } on NotInternetException catch (_) {
       logger.i('DO TASK: Нет интернета');
       await _revisionLocalDatasource.set(true);
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     } on Exception catch (error, stackTrace) {
       logger.e('DONE TASK:', error, stackTrace);
-      emit(
-        NotesFailureState(
-          error: error,
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesFailureState(error, state.tasks));
     } finally {
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     }
   }
 
   Future<void> deleteTask(int index) async {
     try {
       ///Start Loading State
-      emit(
-        NotesProgressState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesProgressState(state.tasks));
 
       final id = state.tasks![index].id;
 
@@ -183,48 +111,22 @@ class NotesCubit extends Cubit<NotesState> {
       final tasks = await _taskLocalDatasource.getAll();
 
       ///Start Temporary State
-      emit(
-        NotesTemporaryState(
-          tasks: tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesTemporaryState(tasks));
 
       ///Delete task
       await _taskRemoteDatasource.delete(id);
 
       ///Start Success State
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     } on NotInternetException catch (_) {
       logger.i('DELETE TASK: Нет интернета');
       await _revisionLocalDatasource.set(true);
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     } on Exception catch (error, stackTrace) {
       logger.e('DELETE TASK:', error, stackTrace);
-      emit(
-        NotesFailureState(
-          error: error,
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesFailureState(error,state.tasks));
     } finally {
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks),);
     }
   }
 
@@ -232,12 +134,7 @@ class NotesCubit extends Cubit<NotesState> {
     try {
       if (text.trim().isNotEmpty) {
         ///Start Loading State
-        emit(
-          NotesProgressState(
-            tasks: state.tasks,
-            filter: state.filter,
-          ),
-        );
+        emit(NotesProgressState(state.tasks));
 
         final task = Task.create(text);
 
@@ -245,67 +142,31 @@ class NotesCubit extends Cubit<NotesState> {
 
         final tasks = await _taskLocalDatasource.getAll();
 
-        emit(
-          NotesTemporaryState(
-            tasks: tasks,
-            filter: state.filter,
-          ),
-        );
+        emit(NotesTemporaryState(tasks));
 
         ///Create task
         await _taskRemoteDatasource.post(task);
 
         ///Start Success State
-        emit(
-          NotesSuccessState(
-            tasks: state.tasks,
-            filter: state.filter,
-          ),
-        );
+        emit(NotesSuccessState(state.tasks));
       }
     } on NotInternetException catch (_) {
       logger.i('ADD TASK: Нет интернета');
       await _revisionLocalDatasource.set(true);
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     } on Exception catch (error, stackTrace) {
       logger.e('ADD TASK:', error, stackTrace);
-      emit(
-        NotesFailureState(
-          error: error,
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesFailureState(error, state.tasks));
     } finally {
-      emit(
-        NotesSuccessState(
-          tasks: state.tasks,
-          filter: state.filter,
-        ),
-      );
+      emit(NotesSuccessState(state.tasks));
     }
   }
 
   void filter() {
     ///Start Loading State
-    emit(
-      NotesProgressState(
-        tasks: state.tasks,
-        filter: state.filter,
-      ),
-    );
+    emit(NotesProgressState(state.tasks));
 
     ///Start Success State
-    emit(
-      NotesSuccessState(
-        tasks: state.tasks,
-        filter: !state.filter,
-      ),
-    );
+    emit(NotesSuccessState(state.tasks));
   }
 }

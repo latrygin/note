@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:note/core/exception/exception.dart';
 import 'package:note/core/l10n/s.dart';
 import 'package:note/domain/repository/revision_remote_impl.dart';
@@ -22,9 +23,9 @@ class NotePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NoteCubit(
-        taskRemoteDatasource: context.read<TaskRemoteDatasource>(),
-        taskLocalDatasource: context.read<TaskLocalDatasource>(),
-        revisionLocalDatasource: context.read<RevisionLocalDatasource>(),
+        taskRemoteDatasource: GetIt.I<TaskRemoteDatasource>(),
+        taskLocalDatasource: GetIt.I<TaskLocalDatasource>(),
+        revisionLocalDatasource: GetIt.I<RevisionLocalDatasource>(),
       )..initial(id),
       child: BlocListener<NoteCubit, NoteState>(
         listener: (context, state) {
@@ -51,9 +52,16 @@ class NotePage extends StatelessWidget {
             );
           }
         },
-        child: const Scaffold(
-          appBar: NoteHeader(),
-          body: NoteBody(),
+        child: Scaffold(
+          appBar: const NoteHeader(),
+          body: MediaQuery.of(context).size.width > 600
+              ? const Center(
+                  child: SizedBox(
+                    width: 600,
+                    child: NoteBody(),
+                  ),
+                )
+              : const NoteBody(),
         ),
       ),
     );

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:note/core/navigation/transition.dart';
 import 'package:note/screen/note/note.dart';
 import 'package:note/screen/notes/notes.dart';
-
+import 'navigation.dart';
 import 'state.dart';
 
 class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<NavigationStateDTO> {
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<NavigationStateDTO> implements Nav{
   bool _isHome;
 
   bool _isTask;
@@ -28,18 +28,21 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
 
   bool get isCreateTask => _isTask && _taskId == null;
 
+  @override
   void gotoHome() {
     _isTask = false;
     _taskId = null;
     notifyListeners();
   }
 
+  @override
   void gotoTask(String id) {
     _isTask = true;
     _taskId = id;
     notifyListeners();
   }
 
+  @override
   void gotoCreateTask() {
     _isTask = true;
     _taskId = null;
@@ -70,7 +73,7 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
       transitionDelegate: const TaskTransitionDelegate(),
       key: navigatorKey,
       observers: [
-        context.read<RouteObserver>(),
+        GetIt.I<RouteObserver>()
       ],
       pages: [
         if (isHome) const MaterialPage(child: NotesPage()),
