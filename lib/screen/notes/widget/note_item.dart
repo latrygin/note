@@ -27,6 +27,7 @@ class NoteWidget extends StatefulWidget {
 
 class _NoteWidgetState extends State<NoteWidget> {
   double? height;
+  double opacity = 1;
 
   Color purple(Set<MaterialState> states) => Colors.deepPurple;
 
@@ -34,104 +35,113 @@ class _NoteWidgetState extends State<NoteWidget> {
 
   Color gray(Set<MaterialState> states) => Colors.grey;
 
+  static const _duration = Duration(milliseconds: 300);
+  static const _durationOpacity = Duration(milliseconds: 150);
+
   @override
   Widget build(BuildContext context) {
-    return AnimatedSize(
-      alignment: Alignment.topCenter,
-      duration: const Duration(milliseconds: 500),
-      child: Dismissible(
-        confirmDismiss: (direction) async {
-          if (direction == DismissDirection.startToEnd) {
-            setState(() {
-              height = 0;
-            });
-            await context.read<NotesCubit>().deleteTask(widget.index);
-          }
-          if (direction == DismissDirection.endToStart) {
-            await context.read<NotesCubit>().doneTask(
-                  widget.index,
-                  !widget.task.done,
-                );
-            return false;
-          }
-          return null;
-        },
-        secondaryBackground: DismissibleBackground(
-          color: widget.task.done ? Colors.deepPurple : Colors.green,
-          icon: widget.task.done ? Icons.close : Icons.done,
-        ),
-        background: const DismissibleBackground(
-          color: Colors.red,
-          icon: Icons.delete,
-          isRight: false,
-        ),
-        key: UniqueKey(),
-        child: SizedBox(
-          height: height,
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 6.0),
-            onTap: () => GetIt.I<Nav>().gotoTask(widget.task.id),
-            leading: Checkbox.adaptive(
-              fillColor: MaterialStateProperty.resolveWith(
-                widget.task.done
-                    ? purple
-                    : widget.task.importance == TaskImportant.important
-                        ? red
-                        : gray,
+    return AnimatedOpacity(
+      opacity: opacity,
+      duration: _durationOpacity,
+      child: AnimatedSize(
+        alignment: Alignment.topCenter,
+        duration: _duration,
+        child: Dismissible(
+          confirmDismiss: (direction) async {
+            if (direction == DismissDirection.startToEnd) {
+              setState(() {
+                height = 0;
+                opacity = 0;
+              });
+              await Future<void>.delayed(_duration);
+              await context.read<NotesCubit>().deleteTask(widget.index);
+            }
+            if (direction == DismissDirection.endToStart) {
+              await context.read<NotesCubit>().doneTask(
+                    widget.index,
+                    !widget.task.done,
+                  );
+              return false;
+            }
+            return null;
+          },
+          secondaryBackground: DismissibleBackground(
+            color: widget.task.done ? Colors.deepPurple : Colors.green,
+            icon: widget.task.done ? Icons.close : Icons.done,
+          ),
+          background: const DismissibleBackground(
+            color: Colors.red,
+            icon: Icons.delete,
+            isRight: false,
+          ),
+          key: UniqueKey(),
+          child: SizedBox(
+            height: height,
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(vertical: 6.0),
+              onTap: () => GetIt.I<Nav>().gotoTask(widget.task.id),
+              leading: Checkbox.adaptive(
+                fillColor: MaterialStateProperty.resolveWith(
+                  widget.task.done
+                      ? purple
+                      : widget.task.importance == TaskImportant.important
+                          ? red
+                          : gray,
+                ),
+                value: widget.task.done,
+                onChanged: (value) =>
+                    context.read<NotesCubit>().doneTask(widget.index, value!),
               ),
-              value: widget.task.done,
-              onChanged: (value) =>
-                  context.read<NotesCubit>().doneTask(widget.index, value!),
-            ),
-            title: RichText(
-              maxLines: 3,
-              text: TextSpan(
-                children: [
-                  if (widget.task.importance == TaskImportant.low &&
-                      !widget.task.done)
-                    const WidgetSpan(
-                      child: Icon(
-                        Icons.arrow_downward,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  if (widget.task.importance == TaskImportant.important &&
-                      !widget.task.done)
-                    const WidgetSpan(
-                      child: Icon(
-                        Icons.warning_rounded,
-                        size: 16,
-                        color: Colors.red,
-                      ),
-                    ),
-                  TextSpan(
-                    text: widget.task.text,
-                    style: Theme.of(context)
-                        .listTileTheme
-                        .titleTextStyle!
-                        .copyWith(
-                          decoration: widget.task.done
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none,
-                          color: widget.task.done ? Colors.grey : null,
+              title: RichText(
+                maxLines: 3,
+                text: TextSpan(
+                  children: [
+                    if (widget.task.importance == TaskImportant.low &&
+                        !widget.task.done)
+                      const WidgetSpan(
+                        child: Icon(
+                          Icons.arrow_downward,
+                          size: 16,
+                          color: Colors.grey,
                         ),
-                  ),
-                ],
+                      ),
+                    if (widget.task.importance == TaskImportant.important &&
+                        !widget.task.done)
+                      const WidgetSpan(
+                        child: Icon(
+                          Icons.warning_rounded,
+                          size: 16,
+                          color: Colors.red,
+                        ),
+                      ),
+                    TextSpan(
+                      text: widget.task.text,
+                      style: Theme.of(context)
+                          .listTileTheme
+                          .titleTextStyle!
+                          .copyWith(
+                            decoration: widget.task.done
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            color: widget.task.done ? Colors.grey : null,
+                          ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            subtitle: widget.task.deadline == null
-                ? null
-                : Text(
-                    DateFormat.yMMMMd(Platform.localeName)
-                        .format(widget.task.deadline!),
-                    style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                  ),
-            trailing: IconButton(
-              onPressed: () => GetIt.I<Nav>().gotoTask(widget.task.id),
-              icon: const Icon(
-                Icons.info_outline,
-                color: Colors.grey,
+              subtitle: widget.task.deadline == null
+                  ? null
+                  : Text(
+                      DateFormat.yMMMMd(Platform.localeName)
+                          .format(widget.task.deadline!),
+                      style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                    ),
+              trailing: IconButton(
+                onPressed: () => GetIt.I<Nav>().gotoTask(widget.task.id),
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: Colors.grey,
+                ),
               ),
             ),
           ),
