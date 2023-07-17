@@ -124,30 +124,30 @@ jobs:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
         run: |
-          flutter build apk --split-per-abi --flavor production --target lib/main_production.dart --dart-define=TOKEN=$TOKEN --dart-define=PATH_API=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
-          flutter build apk --flavor production --target lib/main_production.dart --dart-define=TOKEN=$TOKEN --dart-define=PATH_API=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
+          #          flutter build apk --split-per-abi --flavor production --target lib/main_production.dart --dart-define=TOKEN=$TOKEN --dart-define=PATH_API=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
+               flutter build apk --flavor production --target lib/main_production.dart --dart-define=TOKEN=$TOKEN --dart-define=PATH_API=$PATH_API --dart-define=API_KEY=$API_KEY --dart-define=APP_ID=$APP_ID --dart-define=MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=STORAGE_BUCKET=$STORAGE_BUCKET
 
       - uses: actions/upload-artifact@v3
         with:
           name: note
           path: build/app/outputs/flutter-apk/app-production-release.apk
-      - uses: actions/upload-artifact@v3
-        with:
-          name: note-arm-v8a
-          path: build/app/outputs/flutter-apk/app-arm64-v8a-production-release.apk
-      - uses: actions/upload-artifact@v3
-        with:
-          name: note-arm-v7a
-          path: build/app/outputs/flutter-apk/app-armeabi-v7a-production-release.apk
-      - uses: actions/upload-artifact@v3
-        with:
-          name: note-x86-64
-          path: build/app/outputs/flutter-apk/app-x86_64-production-release.apk
+      #      - uses: actions/upload-artifact@v3
+      #        with:
+      #          name: note-arm-v8a
+      #          path: build/app/outputs/flutter-apk/app-arm64-v8a-production-release.apk
+      #      - uses: actions/upload-artifact@v3
+      #        with:
+      #          name: note-arm-v7a
+      #          path: build/app/outputs/flutter-apk/app-armeabi-v7a-production-release.apk
+      #      - uses: actions/upload-artifact@v3
+      #        with:
+      #          name: note-x86-64
+      #          path: build/app/outputs/flutter-apk/app-x86_64-production-release.apk
 
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.SERVICES }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: build/app/outputs/flutter-apk/app-production-release.apk
