@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:note/core/l10n/s.dart';
-import 'package:note/core/navigation/delegate.dart';
+import 'package:note/core/navigation/navigation.dart';
 import 'package:note/screen/note/note.dart';
 
 class NoteHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -14,12 +15,11 @@ class NoteHeader extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 4,
       leading: IconButton(
         key: const ValueKey('BackButton'),
-        onPressed: () {
-          context.read<TaskRouterDelegate>().gotoHome();
-
-          ///TODO(pop task)
-        },
-        icon: const Icon(Icons.close),
+        onPressed: () => GetIt.I<Nav>().gotoHome(),
+        icon: Icon(
+          Icons.close,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
       actions: [
         TextButton(

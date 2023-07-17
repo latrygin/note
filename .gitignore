@@ -42,3 +42,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/app/google-services.json
+/android/app/src/production/google-services.json
+/android/app/src/development/google-services.json
+/.github/workflows/test.yml

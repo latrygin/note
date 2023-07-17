@@ -15,7 +15,7 @@ class FlutterTheme {
 
   static const colorRedLight = Color(0xFFFF3B30);
   static const colorGreenLight = Color(0xFF34C759);
-  static const colorBlueLight = Color(0xFF007AFF);
+  static const colorPurpleLight = Color(0xFF673AB7);
   static const colorGrayLight = Color(0xFF8E8E93);
 
   static const backPrimaryLight = Color(0xFFF7F6F2);
@@ -53,19 +53,26 @@ class FlutterTheme {
         titleTextStyle: const TextStyle(
           fontStyle: FontStyle.normal,
           color: labelPrimaryLight,
-          fontSize: 20.0,
-          height: 1.6,
+          fontSize: 24.0,
+          height: 38.0 / 32.0,
           letterSpacing: 0.5,
           fontWeight: FontWeight.w500,
         ),
         backgroundColor: backPrimaryLight,
+        toolbarTextStyle: const TextStyle(
+          fontStyle: FontStyle.normal,
+          color: labelTertiaryLight,
+          fontWeight: FontWeight.w400,
+          fontSize: 14.0,
+          height: 20.0 / 16.0,
+        ),
         actionsIconTheme: const IconThemeData(
           size: 24,
-          color: colorBlueLight,
+          color: colorPurpleLight,
         ),
         iconTheme: const IconThemeData(
           size: 24,
-          color: Colors.deepPurple,
+          color: labelPrimaryLight,
         ),
       ),
       listTileTheme: const ListTileThemeData(
@@ -73,29 +80,34 @@ class FlutterTheme {
           horizontal: 16.0,
           vertical: 6.0,
         ),
-        //minVerticalPadding: 0,
         titleTextStyle: TextStyle(
           fontStyle: FontStyle.normal,
           color: labelPrimaryLight,
-          fontSize: 16.0,
-          height: 1.4,
+          fontSize: 14.0,
+          height: 20.0 / 16.0,
           fontWeight: FontWeight.w400,
         ),
         subtitleTextStyle: TextStyle(
           fontStyle: FontStyle.normal,
-          color: labelTertiaryLight,
+          color: colorPurpleLight,
           fontSize: 14.0,
-          height: 1.4,
+          height: 20.0 / 14.0,
           fontWeight: FontWeight.w400,
         ),
       ),
       cardTheme: CardTheme(
+        color: backSecondaryLight,
         margin: EdgeInsets.zero,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        //color: backSecondaryLight,
+      ),
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: Colors.deepPurple,
+      ).copyWith(
+        outline: colorPurpleLight,
+        outlineVariant: supportSeparatorLight,
       ),
       textTheme: const TextTheme(
         labelLarge: TextStyle(
@@ -105,15 +117,37 @@ class FlutterTheme {
         ),
         labelSmall: TextStyle(
           fontStyle: FontStyle.normal,
-          color: FlutterTheme.labelTertiaryLight,
+          color: labelPrimaryLight,
           fontWeight: FontWeight.w400,
-          fontSize: 12.0,
+          fontSize: 16.0,
           height: 1.25,
+        ),
+        bodyLarge: TextStyle(
+          fontStyle: FontStyle.normal,
+          color: labelPrimaryLight,
+          fontWeight: FontWeight.w400,
+          fontSize: 16.0,
         ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
         border: InputBorder.none,
         contentPadding: EdgeInsets.all(12.0),
+        hintStyle: TextStyle(
+          fontStyle: FontStyle.normal,
+          color: labelTertiaryLight,
+          fontSize: 16.0,
+          height: 20.0 / 16.0,
+          fontWeight: FontWeight.w400,
+        ),
+        prefixIconColor: labelTertiaryLight,
+      ),
+      popupMenuTheme: const PopupMenuThemeData(
+        elevation: 1,
+        color: backElevatedLight,
+        textStyle: TextStyle(
+          color: labelPrimaryLight,
+          fontSize: 16,
+        ),
       ),
     );
   }
@@ -129,7 +163,7 @@ class FlutterTheme {
 
   static const colorRedDark = Color(0xFFFF453A);
   static const colorGreenDark = Color(0xFF32D748);
-  static const colorBlueDark = Color(0xFF0A84FF);
+  static const colorPurpleDark = Color(0xFF9575CD);
   static const colorGrayDark = Color(0xFF8E8E93);
 
   static const backPrimaryDark = Color(0xFF161618);
@@ -167,15 +201,22 @@ class FlutterTheme {
         titleTextStyle: const TextStyle(
           fontStyle: FontStyle.normal,
           color: labelPrimaryDark,
-          fontSize: 20.0,
-          height: 1.6,
+          fontSize: 24.0,
+          height: 38.0 / 32.0,
           letterSpacing: 0.5,
           fontWeight: FontWeight.w500,
         ),
         backgroundColor: backPrimaryDark,
+        toolbarTextStyle: const TextStyle(
+          fontStyle: FontStyle.normal,
+          color: labelTertiaryDark,
+          fontWeight: FontWeight.w400,
+          fontSize: 14.0,
+          height: 20.0 / 16.0,
+        ),
         actionsIconTheme: const IconThemeData(
           size: 24,
-          color: colorBlueDark,
+          color: colorPurpleDark,
         ),
         iconTheme: const IconThemeData(
           size: 24,
@@ -190,19 +231,20 @@ class FlutterTheme {
         titleTextStyle: TextStyle(
           fontStyle: FontStyle.normal,
           color: labelPrimaryDark,
-          fontSize: 16.0,
-          height: 1.4,
+          fontSize: 14.0,
+          height: 20.0 / 16.0,
           fontWeight: FontWeight.w400,
         ),
         subtitleTextStyle: TextStyle(
           fontStyle: FontStyle.normal,
-          color: labelTertiaryDark,
+          color: colorPurpleDark,
           fontSize: 14.0,
-          height: 1.4,
+          height: 20.0 / 14.0,
           fontWeight: FontWeight.w400,
         ),
       ),
       cardTheme: CardTheme(
+        color: backSecondaryDark,
         margin: EdgeInsets.zero,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -213,8 +255,9 @@ class FlutterTheme {
       colorScheme: ColorScheme.fromSwatch(
         brightness: Brightness.dark,
         primarySwatch: Colors.deepPurple,
-        primaryColorDark: Colors.deepPurple,
-        accentColor: Colors.deepPurple,
+      ).copyWith(
+        outline: colorPurpleDark,
+        outlineVariant: supportSeparatorDark,
       ),
       textTheme: const TextTheme(
         labelLarge: TextStyle(
@@ -224,15 +267,37 @@ class FlutterTheme {
         ),
         labelSmall: TextStyle(
           fontStyle: FontStyle.normal,
-          color: FlutterTheme.labelTertiaryDark,
+          color: labelPrimaryDark,
           fontWeight: FontWeight.w400,
-          fontSize: 12.0,
+          fontSize: 16.0,
           height: 1.25,
+        ),
+        bodyLarge: TextStyle(
+          fontStyle: FontStyle.normal,
+          color: labelPrimaryDark,
+          fontWeight: FontWeight.w400,
+          fontSize: 16.0,
         ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
         border: InputBorder.none,
         contentPadding: EdgeInsets.all(12.0),
+        hintStyle: TextStyle(
+          fontStyle: FontStyle.normal,
+          color: labelTertiaryDark,
+          fontSize: 16.0,
+          height: 20.0 / 16.0,
+          fontWeight: FontWeight.w400,
+        ),
+        prefixIconColor: labelTertiaryDark,
+      ),
+      popupMenuTheme: const PopupMenuThemeData(
+        elevation: 1,
+        color: backElevatedDark,
+        textStyle: TextStyle(
+          color: labelPrimaryDark,
+          fontSize: 16,
+        ),
       ),
     );
   }

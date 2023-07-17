@@ -1,13 +1,16 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:note/core/navigation/transition.dart';
 import 'package:note/screen/note/note.dart';
 import 'package:note/screen/notes/notes.dart';
 
+import 'navigation.dart';
 import 'state.dart';
 
 class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<NavigationStateDTO> {
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<NavigationStateDTO>
+    implements Nav {
   bool _isHome;
 
   bool _isTask;
@@ -28,19 +31,25 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
 
   bool get isCreateTask => _isTask && _taskId == null;
 
+  @override
   void gotoHome() {
+    FirebaseAnalytics.instance.logEvent(name: 'goto-home');
     _isTask = false;
     _taskId = null;
     notifyListeners();
   }
 
+  @override
   void gotoTask(String id) {
+    FirebaseAnalytics.instance.logEvent(name: 'goto-task');
     _isTask = true;
     _taskId = id;
     notifyListeners();
   }
 
+  @override
   void gotoCreateTask() {
+    FirebaseAnalytics.instance.logEvent(name: 'goto-create-task');
     _isTask = true;
     _taskId = null;
     notifyListeners();
@@ -69,9 +78,7 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
       },
       transitionDelegate: const TaskTransitionDelegate(),
       key: navigatorKey,
-      observers: [
-        context.read<RouteObserver>(),
-      ],
+      observers: [GetIt.I<RouteObserver>()],
       pages: [
         if (isHome) const MaterialPage(child: NotesPage()),
         if (isCreateTask) const MaterialPage(child: NotePage()),

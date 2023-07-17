@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:note/core/exception/exception.dart';
 import 'package:note/domain/entity/task.dart';
@@ -200,7 +202,6 @@ class NoteCubit extends Cubit<NoteState> {
       );
     } finally {
       // NavigationManager.instance.popToHome();
-      ///TODO(pop task)
     }
   }
 

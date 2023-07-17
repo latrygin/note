@@ -25,13 +25,16 @@ class InputDateWidget extends StatelessWidget {
       builder: (context, state) {
         return ListTile(
           onTap: () => showDatePick(context, state.task.deadline),
-          title: Text(S.of(context).get(SName.makeTo)),
+          title: Text(
+            S.of(context).get(SName.makeTo),
+            style: Theme.of(context).listTileTheme.titleTextStyle,
+          ),
           subtitle: state.task.deadline == null
               ? null
               : Text(
                   DateFormat.yMMMMd(Platform.localeName)
                       .format(state.task.deadline!),
-                  style: const TextStyle(color: Colors.deepPurple),
+                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
                 ),
           trailing: Switch(
             value: state.task.deadline != null,

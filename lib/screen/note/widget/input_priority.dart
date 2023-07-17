@@ -16,13 +16,24 @@ class InputPriorityWidget extends StatelessWidget {
           onSelected: (priority) =>
               context.read<NoteCubit>().setPriority(priority),
           child: ListTile(
-            title: Text(S.of(context).get(SName.priority)),
+            title: Text(
+              S.of(context).get(SName.priority),
+              style: Theme.of(context).listTileTheme.titleTextStyle,
+            ),
             subtitle: Text(
-              state.task.importance == TaskImportant.basic
-                  ? S.of(context).get(SName.nonePriority)
-                  : state.task.importance == TaskImportant.low
-                      ? S.of(context).get(SName.lowPriority)
-                      : S.of(context).get(SName.highPriority),
+              switch (state.task.importance) {
+                TaskImportant.basic => S.of(context).get(SName.nonePriority),
+                TaskImportant.low => S.of(context).get(SName.lowPriority),
+                TaskImportant.important => S.of(context).get(SName.highPriority)
+              },
+              style:
+                  Theme.of(context).listTileTheme.subtitleTextStyle!.copyWith(
+                        color: switch (state.task.importance) {
+                          TaskImportant.basic => Colors.grey,
+                          TaskImportant.low => null,
+                          TaskImportant.important => Colors.red
+                        },
+                      ),
             ),
           ),
           itemBuilder: (context) => [
@@ -30,31 +41,24 @@ class InputPriorityWidget extends StatelessWidget {
               value: TaskImportant.basic,
               child: Text(
                 S.of(context).get(SName.nonePriority),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
+                style: Theme.of(context).popupMenuTheme.textStyle,
               ),
             ),
             PopupMenuItem<TaskImportant>(
               value: TaskImportant.low,
               child: Text(
                 S.of(context).get(SName.lowPriority),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
+                style: Theme.of(context).popupMenuTheme.textStyle,
               ),
             ),
             PopupMenuItem<TaskImportant>(
               value: TaskImportant.important,
-              textStyle: const TextStyle(color: Colors.red),
               child: Text(
                 S.of(context).get(SName.highPriority),
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                ),
+                style: Theme.of(context)
+                    .popupMenuTheme
+                    .textStyle!
+                    .copyWith(color: Colors.red),
               ),
             ),
           ],

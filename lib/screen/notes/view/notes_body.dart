@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:note/core/exception/exception.dart';
 import 'package:note/core/l10n/s.dart';
-import 'package:note/core/navigation/delegate.dart';
+import 'package:note/core/navigation/navigation.dart';
 import 'package:note/screen/notes/cubit/notes_cubit.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 
@@ -18,6 +19,8 @@ class NotesBody extends StatefulWidget {
 
 class _NotesBodyState extends State<NotesBody> with RouteAware {
   late ScrollController _scrollController;
+  bool filter = false;
+
   @override
   void initState() {
     _scrollController = ScrollController();
@@ -58,20 +61,49 @@ class _NotesBodyState extends State<NotesBody> with RouteAware {
         }
       },
       child: Scaffold(
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            NotesHeader(isActive: isAppBar),
-            const NotesList(),
-          ],
-        ),
+        body: MediaQuery.of(context).size.width > 600
+            ? Center(
+                child: SizedBox(
+                  width: 600,
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      NotesHeader(
+                        isActive: isAppBar,
+                        filter: filter,
+                        onPressed: () {
+                          setState(() {
+                            filter = !filter;
+                          });
+                        },
+                      ),
+                      NotesList(
+                        filter: filter,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  NotesHeader(
+                    isActive: isAppBar,
+                    filter: filter,
+                    onPressed: () {
+                      setState(() {
+                        filter = !filter;
+                      });
+                    },
+                  ),
+                  NotesList(
+                    filter: filter,
+                  ),
+                ],
+              ),
         floatingActionButton: FloatingActionButton(
           key: const ValueKey('Floating'),
-          onPressed: () {
-            context.read<TaskRouterDelegate>().gotoCreateTask();
-
-            ///TODO(open task for create)
-          },
+          onPressed: () => GetIt.I<Nav>().gotoCreateTask(),
           child: const Icon(Icons.add),
         ),
       ),
@@ -82,8 +114,7 @@ class _NotesBodyState extends State<NotesBody> with RouteAware {
   void didChangeDependencies() {
     super.didChangeDependencies();
     WidgetsBinding.instance.endOfFrame.then((value) {
-      context
-          .read<RouteObserver>()
+      GetIt.I<RouteObserver>()
           .subscribe(this, ModalRoute.of(context) as PageRoute);
     });
   }

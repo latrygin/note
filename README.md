@@ -25,6 +25,8 @@ Note - это простое и интуитивно понятное прило
 
 ## UI Приложения
 
+### Реализована поддержка тёмной темы, анимация и обрезания текста, как по макету, поддержка лендскейп-ориентации и больших экранов
+
 <img src="https://github.com/latrygin/note/assets/114460271/ef4ce6ba-cbdc-40be-8edd-4d5d157bedbc" width="200">
 <img src="https://github.com/latrygin/note/assets/114460271/151fd0c7-fb27-483f-9526-60739f44a37d" width="200">
 <img src="https://github.com/latrygin/note/assets/114460271/6a158bb5-1f0a-4914-8110-e52fc4976cf0" width="200">
@@ -47,20 +49,39 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+
+  #  helper library
   cupertino_icons: ^1.0.2
   equatable: ^2.0.5
-  bloc: ^8.1.2
-  flutter_bloc: ^8.1.3
   logger: ^1.4.0
   intl: ^0.18.0
-  dio: ^5.2.0
-  shared_preferences: ^2.1.2
   uuid: ^3.0.7
   device_info_plus: ^9.0.2
+  path_provider: ^2.0.15
+  get_it: ^7.6.0
+
+  #  remote connection
+  dio: ^5.2.0
+
+  #  local storage
+  shared_preferences: ^2.1.2
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
-  path_provider: ^2.0.15
+
+  #  state manager
   provider: ^6.0.5
+  bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
+
+  #  annotation
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+
+  #  firebase
+  firebase_core: ^2.14.0
+  firebase_crashlytics: ^3.3.3
+  firebase_analytics: ^10.4.3
+  firebase_remote_config: ^4.2.4
 
 dev_dependencies:
   integration_test:
@@ -69,10 +90,12 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   isar_generator: ^3.1.0+1
   test: ^1.24.1
   bloc_test: ^9.1.3
+  freezed: ^2.4.1
+  json_serializable: ^6.7.1
 ```
 
 
@@ -81,6 +104,8 @@ dev_dependencies:
 ```dart
 - core
   - api                // Dio, интерсепторы, apiClient
+  - di                 // DI с настройкой сущностей
+  - firebase           // Работа с Firebase
   - exception          // Исключения прилоложения
   - l10n               // Локализация приложения
   - navigation         // Навигация 2.0
@@ -108,7 +133,8 @@ dev_dependencies:
 
 - app.dart             // app файл с мультирепозиторием
 - main.dart            // main запуск приложения с реальными данными
-- main_mock.dart       // main_mock запуск с мокаными данными
+- main_development.dart// main_development запуск с мокаными данными
+- main_production.dart // main_production запуск с мокаными данными
 
 ```
 ## Установка и запуск проекта
@@ -126,19 +152,32 @@ git clone https://github.com/latrygin/note.git
 ```bash
 cd note
 ```
-3. Запустите следующую команду, чтобы загрузить зависимости проекта:
+3. Запустите следующую команду, чтобы создать необходимые файлы проекта для работы с firebase:
+
+```bash
+touch ./android/app/google-services.json
+touch ./android/app/src/development/google-services.json
+touch ./android/app/src/production/google-services.json
+```
+
+4. Заполните эти файлы своими уникальными ключами.
+
+
+5. Запустите следующую команду, чтобы загрузить зависимости проекта:
 
 ```bash
 flutter pub get
 ```
 
-3. Подключите свое устройство или эмулятор и выполните следующую команду:
+6. Подключите свое устройство или эмулятор и выполните следующую команду:
 
 ```bash
-flutter run --dart-define=TOKEN=YOUR_TOKEN --dart-define=PATH=YOUR_PATH
+flutter run --flavor production --target lib/main_production.dart --dart-define=TOKEN=YOUR_TOKEN --dart-define=PATH=YOUR_PATH
 ```
 
 ## Реализация
+
+### Реализовано логгирование, крашлитика и remote config для firebase
 
 ### Код разбит на фичи и слои
 
@@ -269,25 +308,19 @@ class ApiClient {
 ```dart
 import 'app.dart';
 
-void main() {
-  runZonedGuarded(
-    () {
-      WidgetsFlutterBinding.ensureInitialized();
-      runApp(
-        App(
-          taskLocalDatasource: TaskLocal(),
-          taskRemoteDatasource: TaskRemote(),
-          revisionLocalDatasource: RevisionLocal(),
-          revisionRemoteDatasource: RevisionRemote(),
-          taskRouterDelegate: TaskRouterDelegate(),
-        ),
-      );
-    },
-    (error, stackTrace) {
-      logger.e('MAIN:', error, stackTrace);
-    },
-  );
+Future<void> main() async {
+  logger.i('Start main_production');
+
+  /// Инициализация Binding
+  WidgetsFlutterBinding.ensureInitialized();
+
+  /// Инициализация DI
+  await DI.setUpDI(DIOptions.production);
+
+  /// Запуск проекта
+  runApp(const App());
 }
+
 ```
 
 ## Тестирование
@@ -300,93 +333,37 @@ void main() {
 
 ## DI
 
-DI релирован с помощью пакета flutter_bloc и определяет сущности на старте проекта:
+DI релирован с помощью пакета get_it и определяет сущности на старте проекта:
 
 ```dart
-class App extends StatelessWidget {
-  final TaskLocalDatasource _taskLocalDatasource;
-  final TaskRemoteDatasource _taskRemoteDatasource;
-  final RevisionLocalDatasource _revisionLocalDatasource;
-  final RevisionRemoteDatasource _revisionRemoteDatasource;
-  final TaskRouterDelegate _taskRouterDelegate;
+di.registerSingleton<ConfigRepositoryProd>(configRepo);
+di.registerSingleton<Nav>(TaskRouterDelegate());
+di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(
+  TaskRouteInformationParser(),
+);
+di.registerSingleton<PlatformRouteInformationProvider>(
+  DebugRouteInformationProvider(),
+);
+di.registerSingleton<RouteObserver>(RouteObserver());
 
-  const App({
-    super.key,
-    required TaskLocalDatasource taskLocalDatasource,
-    required TaskRemoteDatasource taskRemoteDatasource,
-    required RevisionLocalDatasource revisionLocalDatasource,
-    required RevisionRemoteDatasource revisionRemoteDatasource,
-    required TaskRouterDelegate taskRouterDelegate,
-  })  : _taskLocalDatasource = taskLocalDatasource,
-        _taskRemoteDatasource = taskRemoteDatasource,
-        _revisionLocalDatasource = revisionLocalDatasource,
-        _revisionRemoteDatasource = revisionRemoteDatasource,
-        _taskRouterDelegate = taskRouterDelegate;
-
-  static const String _title = 'Note';
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        ///Local storage for Task
-        RepositoryProvider<TaskLocalDatasource>.value(
-          value: _taskLocalDatasource,
-        ),
-
-        ///Remote storage for Task
-        RepositoryProvider<TaskRemoteDatasource>.value(
-          value: _taskRemoteDatasource,
-        ),
-
-        ///Remote storage for Local Revision
-        RepositoryProvider<RevisionLocalDatasource>.value(
-          value: _revisionLocalDatasource,
-        ),
-
-        ///Remote storage for Revision
-        RepositoryProvider<RevisionRemoteDatasource>.value(
-          value: _revisionRemoteDatasource,
-        ),
-
-        ChangeNotifierProvider<TaskRouterDelegate>.value(
-          value: _taskRouterDelegate,
-        ),
-
-        Provider<RouteObserver>.value(
-          value: RouteObserver(),
-        ),
-      ],
-      child: Builder(
-        builder: (context) {
-          return MaterialApp.router(
-            key: const ValueKey('Material'),
-            title: _title,
-
-            ///localizations
-            localizationsDelegates: S.localizationsDelegates,
-            supportedLocales: S.supportedLocales,
-
-            ///theme
-            theme: FlutterTheme.light,
-            //darkTheme: FlutterTheme.dark,
-
-            ///Navigation
-            routerDelegate: context.read<TaskRouterDelegate>(),
-            routeInformationParser: TaskRouteInformationParser(),
-            routeInformationProvider: DebugRouteInformationProvider(),
-
-            ///Other
-            debugShowCheckedModeBanner: false,
-          );
-        },
-      ),
-    );
-  }
-}
+/// Repository
+di.registerLazySingleton<TaskLocalDatasource>(
+  () => TaskLocal(
+    device: DeviceInfoPlugin(),
+  ),
+);
+di.registerLazySingleton<TaskRemoteDatasource>(
+  () => TaskRemote(
+    https: ApiClient(),
+    revision: RevisionRemote(),
+    device: DeviceInfoPlugin(),
+  ),
+);
+di.registerLazySingleton<RevisionLocalDatasource>(RevisionLocal.new);
+di.registerLazySingleton<RevisionRemoteDatasource>(RevisionRemote.new);
 ```
 
-А используется через контекст в экранах:
+А используется через GetIt в экранах:
 
 ```dart
 class NotesPage extends StatelessWidget {
@@ -396,9 +373,9 @@ class NotesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NotesCubit(
-        taskLocalDatasource: context.read<TaskLocalDatasource>(),
-        taskRemoteDatasource: context.read<TaskRemoteDatasource>(),
-        revisionLocalDatasource: context.read<RevisionLocalDatasource>(),
+        taskLocalDatasource: GetIt.I<TaskLocalDatasource>(),
+        taskRemoteDatasource: GetIt.I<TaskRemoteDatasource>(),
+        revisionLocalDatasource: GetIt.I<RevisionLocalDatasource>(),
       )..initial(),
       child: const NotesBody(),
     );
@@ -505,6 +482,34 @@ class NotePage extends StatelessWidget {
       ),
     );
   }
+}
+```
+
+Настроены flavor для проекта:
+
+```gradle
+flavorDimensions "default"
+  productFlavors {
+      production {
+          dimension "default"
+          resValue "string", "app_name", "Note"
+          applicationIdSuffix ""
+      }
+      development {
+          dimension "default"
+          resValue "string", "app_name", "Note dev"
+          applicationIdSuffix ".dev"
+      }
+  }
+```
+
+Навигация инкапсулирована в отдельной сущности:
+
+```dart
+abstract class Nav {
+  void gotoHome();
+  void gotoTask(String id);
+  void gotoCreateTask();
 }
 ```
 

@@ -1,19 +1,15 @@
-import 'dart:convert';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:note/domain/entity/task.dart';
 
-class TaskRequest {
-  final Task element;
+part 'task_request.freezed.dart';
+part 'task_request.g.dart';
 
-  TaskRequest(
-    this.element,
-  );
+@freezed
+sealed class TaskRequest with _$TaskRequest {
+  const factory TaskRequest({
+    required Task element,
+  }) = _TaskRequest;
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'element': element.toMap(),
-    };
-  }
-
-  String toJson() => json.encode(toMap());
+  factory TaskRequest.fromJson(Map<String, dynamic> json) =>
+      _$TaskRequestFromJson(json);
 }

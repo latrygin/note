@@ -6,8 +6,16 @@ import 'package:note/screen/notes/cubit/notes_cubit.dart';
 import 'package:note/screen/notes/cubit/notes_state.dart';
 
 class NotesHeader extends StatelessWidget {
-  const NotesHeader({super.key, required this.isActive});
   final bool isActive;
+  final bool filter;
+  final void Function()? onPressed;
+  const NotesHeader({
+    super.key,
+    required this.isActive,
+    required this.filter,
+    required this.onPressed,
+  });
+
   static const expandedHeight = 160.0;
 
   @override
@@ -21,9 +29,10 @@ class NotesHeader extends StatelessWidget {
               BlocBuilder<NotesCubit, NotesState>(
                 builder: (context, state) {
                   return IconButton(
-                    onPressed: () => context.read<NotesCubit>().filter(),
+                    onPressed: onPressed,
+                    //onPressed: () => context.read<NotesCubit>().filter(),
                     icon: Icon(
-                      state.filter ? Icons.visibility_off : Icons.visibility,
+                      filter ? Icons.visibility_off : Icons.visibility,
                       color: Colors.deepPurple,
                     ),
                   );
@@ -45,7 +54,7 @@ class NotesHeader extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).get(SName.myTask),
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: Theme.of(context).appBarTheme.titleTextStyle,
                   ),
                   BlocBuilder<NotesCubit, NotesState>(
                     builder: (context, state) {
@@ -61,7 +70,9 @@ class NotesHeader extends StatelessWidget {
                                           getCountDone(state.tasks),
                                         )
                                     : S.of(context).get(SName.loading),
-                                style: Theme.of(context).textTheme.labelSmall,
+                                style: Theme.of(context)
+                                    .appBarTheme
+                                    .toolbarTextStyle,
                               ),
                               if (state is NotesSuccessState)
                                 const SizedBox()
@@ -75,11 +86,9 @@ class NotesHeader extends StatelessWidget {
                             ],
                           ),
                           InkWell(
-                            onTap: () => context.read<NotesCubit>().filter(),
+                            onTap: onPressed,
                             child: Icon(
-                              state.filter
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              filter ? Icons.visibility_off : Icons.visibility,
                               color: Colors.deepPurple,
                               size: 20,
                             ),

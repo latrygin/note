@@ -21,7 +21,7 @@ void main() async {
   setUp(() => logger.v('Next test is running...'));
 
   testWidgets('Create task', (tester) async {
-    test_app.main();
+    await test_app.main();
     await tester.pumpAndSettle();
     logger.v('Начало теста: Create task');
     await Future<void>.delayed(const Duration(seconds: durationCount));
