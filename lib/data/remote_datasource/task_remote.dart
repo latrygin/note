@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:note/core/api/client/api_client.dart';
 import 'package:note/core/api/client/url.dart';
 import 'package:note/core/api/request/task_list_request.dart';
@@ -34,6 +37,7 @@ class TaskRemote implements TaskRemoteDatasource {
 
   @override
   Future<TaskResponse> delete(String id) async {
+    unawaited(FirebaseAnalytics.instance.logEvent(name: 'delete-task'));
     final response = await _https.delete(URLs.delete(id));
     final taskResponse = TaskResponse.fromJson(
       response.data as Map<String, dynamic>,
@@ -67,6 +71,7 @@ class TaskRemote implements TaskRemoteDatasource {
 
   @override
   Future<TaskResponse> post(Task request) async {
+    unawaited(FirebaseAnalytics.instance.logEvent(name: 'add-task'));
     final deviceInfo = await _device.androidInfo;
     final task = request.copyWith(lastUpdatedBy: deviceInfo.id);
     final response = await _https.post(
@@ -82,6 +87,7 @@ class TaskRemote implements TaskRemoteDatasource {
 
   @override
   Future<TaskResponse> put(Task request) async {
+    unawaited(FirebaseAnalytics.instance.logEvent(name: 'change-task'));
     final deviceInfo = await _device.androidInfo;
     final task = request.copyWith(
       lastUpdatedBy: deviceInfo.id,

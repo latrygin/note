@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:note/core/api/request/task_list_request.dart';
 import 'package:note/core/exception/exception.dart';
 import 'package:note/domain/entity/task.dart';
@@ -72,8 +71,6 @@ class NotesCubit extends Cubit<NotesState> {
 
   Future<void> doneTask(int index, bool done) async {
     try {
-      unawaited(FirebaseAnalytics.instance.logEvent(name: 'change-task'));
-
       ///Start Loading State
       emit(NotesProgressState(state.tasks));
 
@@ -109,8 +106,6 @@ class NotesCubit extends Cubit<NotesState> {
 
   Future<void> deleteTask(int index) async {
     try {
-      unawaited(FirebaseAnalytics.instance.logEvent(name: 'delete-task'));
-
       ///Start Loading State
       emit(NotesProgressState(state.tasks));
 
@@ -146,8 +141,6 @@ class NotesCubit extends Cubit<NotesState> {
   Future<void> addTask(String text) async {
     try {
       if (text.trim().isNotEmpty) {
-        unawaited(FirebaseAnalytics.instance.logEvent(name: 'add-task'));
-
         ///Start Loading State
         emit(NotesProgressState(state.tasks));
 
