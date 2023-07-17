@@ -1,8 +1,10 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:note/core/navigation/transition.dart';
 import 'package:note/screen/note/note.dart';
 import 'package:note/screen/notes/notes.dart';
+
 import 'navigation.dart';
 import 'state.dart';
 
@@ -31,6 +33,7 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
 
   @override
   void gotoHome() {
+    FirebaseAnalytics.instance.logEvent(name: 'goto-home');
     _isTask = false;
     _taskId = null;
     notifyListeners();
@@ -38,6 +41,7 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
 
   @override
   void gotoTask(String id) {
+    FirebaseAnalytics.instance.logEvent(name: 'goto-task');
     _isTask = true;
     _taskId = id;
     notifyListeners();
@@ -45,6 +49,7 @@ class TaskRouterDelegate extends RouterDelegate<NavigationStateDTO>
 
   @override
   void gotoCreateTask() {
+    FirebaseAnalytics.instance.logEvent(name: 'goto-create-task');
     _isTask = true;
     _taskId = null;
     notifyListeners();
