@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:note/core/firebase/remote_config.dart';
 import 'package:note/core/navigation/navigation.dart';
 import 'package:note/domain/entity/task.dart';
 import 'package:note/domain/entity/task_importance.dart';
@@ -31,12 +32,18 @@ class _NoteWidgetState extends State<NoteWidget> {
 
   Color purple(Set<MaterialState> states) => Colors.deepPurple;
 
-  Color red(Set<MaterialState> states) => Colors.red;
+  Color main(Set<MaterialState> states) =>
+      Color(int.parse(GetIt.I<ConfigRepositoryProd>().useMyColor));
 
   Color gray(Set<MaterialState> states) => Colors.grey;
 
   static const _duration = Duration(milliseconds: 300);
   static const _durationOpacity = Duration(milliseconds: 150);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +92,7 @@ class _NoteWidgetState extends State<NoteWidget> {
                   widget.task.done
                       ? purple
                       : widget.task.importance == TaskImportant.important
-                          ? red
+                          ? main
                           : gray,
                 ),
                 value: widget.task.done,

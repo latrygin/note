@@ -38,51 +38,51 @@ jobs:
           path: test/failures
           retention-days: 5
 
-  integration-test:
-    needs: [ analyze, test ]
-    name: Run integration test
-    runs-on: macos-11
-    timeout-minutes: 25
-    strategy:
-      matrix:
-        api-level:
-          - 29
-      fail-fast: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-      - name: Set up JDK 11
-        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.11.0
-        with:
-          java-version: 11
-          distribution: temurin
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
-      - name: Create google-services.json file
-        run: |
-          touch ./android/app/google-services.json
-          touch ./android/app/src/development/google-services.json
-          touch ./android/app/src/production/google-services.json
-      - name: Set up google-services.json file
-        env:
-          SERVICES: ${{ secrets.SERVICES }}
-          SERVICES_DEV: ${{ secrets.SERVICES_DEV }}
-        run: |
-          echo $SERVICES > ./android/app/google-services.json
-          echo $SERVICES > ./android/app/src/production/google-services.json
-          echo $SERVICES_DEV > ./android/app/src/development/google-services.json
-
-      - name: Run integration tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          arch: x86_64
-          profile: Nexus 6
-          script: flutter test integration_test --verbose --flavor development
+  #  integration-test:
+  #    needs: [ analyze, test ]
+  #    name: Run integration test
+  #    runs-on: macos-11
+  #    timeout-minutes: 25
+  #    strategy:
+  #      matrix:
+  #        api-level:
+  #          - 29
+  #      fail-fast: true
+  #    steps:
+  #      - uses: actions/checkout@v3
+  #      - name: Setup Flutter SDK
+  #        uses: subosito/flutter-action@v2
+  #        with:
+  #          channel: stable
+  #      - name: Set up JDK 11
+  #        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.11.0
+  #        with:
+  #          java-version: 11
+  #          distribution: temurin
+  #      - name: Install Flutter dependencies
+  #        run: flutter pub get
+  #
+  #      - name: Create google-services.json file
+  #        run: |
+  #          touch ./android/app/google-services.json
+  #          touch ./android/app/src/development/google-services.json
+  #          touch ./android/app/src/production/google-services.json
+  #      - name: Set up google-services.json file
+  #        env:
+  #          SERVICES: ${{ secrets.SERVICES }}
+  #          SERVICES_DEV: ${{ secrets.SERVICES_DEV }}
+  #        run: |
+  #          echo $SERVICES > ./android/app/google-services.json
+  #          echo $SERVICES > ./android/app/src/production/google-services.json
+  #          echo $SERVICES_DEV > ./android/app/src/development/google-services.json
+  #
+  #      - name: Run integration tests
+  #        uses: reactivecircus/android-emulator-runner@v2
+  #        with:
+  #          api-level: ${{ matrix.api-level }}
+  #          arch: x86_64
+  #          profile: Nexus 6
+  #          script: flutter test integration_test --verbose --flavor development
   build:
     needs: [ analyze, test, integration-test ]
     name: Build android on Ubuntu

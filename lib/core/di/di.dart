@@ -1,10 +1,12 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:note/core/api/client/api_client.dart';
+import 'package:note/core/firebase/remote_config.dart';
 import 'package:note/core/navigation/delegate.dart';
 import 'package:note/core/navigation/navigation.dart';
 import 'package:note/core/navigation/parser.dart';
@@ -31,6 +33,14 @@ class DI {
     final di = GetIt.instance;
     switch (options) {
       case DIOptions.developer:
+
+        ///Firebase
+        await Firebase.initializeApp(
+          name: 'production',
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+        final configRepo = ConfigRepositoryDev();
+        di.registerSingleton<ConfigRepositoryDev>(configRepo);
 
         /// Router delegate
         di.registerSingleton<Nav>(TaskRouterDelegate());
@@ -74,6 +84,12 @@ class DI {
         };
 
         /// Router delegate
+        di.registerSingleton<FirebaseRemoteConfig>(
+          FirebaseRemoteConfig.instance,
+        );
+        final configRepo = ConfigRepositoryProd(di<FirebaseRemoteConfig>());
+        await configRepo.init();
+        di.registerSingleton<ConfigRepositoryProd>(configRepo);
         di.registerSingleton<Nav>(TaskRouterDelegate());
         di.registerSingleton<RouteInformationParser<NavigationStateDTO>>(
           TaskRouteInformationParser(),
