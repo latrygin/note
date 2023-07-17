@@ -26,9 +26,11 @@ void main() {
   di
     ..registerSingleton<Nav>(TaskRouterDelegate())
     ..registerSingleton<RouteInformationParser<NavigationStateDTO>>(
-        TaskRouteInformationParser())
+      TaskRouteInformationParser(),
+    )
     ..registerSingleton<PlatformRouteInformationProvider>(
-        DebugRouteInformationProvider())
+      DebugRouteInformationProvider(),
+    )
     ..registerSingleton<RouteObserver>(RouteObserver())
 
     /// Repository
